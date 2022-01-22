@@ -1,9 +1,12 @@
+#include <engine/shEngine.h>
+
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkPipelineData.h>
-#include <shvulkan/shVkDrawLoop.h>
+#include <shvulkan/shVkDrawloop.h>
 
-#include <GLFW/glfw3.h>
+#include <ecs/shCamera.h>
+#include <ecs/shTransform.h>
 
 #include <gaia_archive_tools/gaiaArchiveTools.h>
 
@@ -11,60 +14,48 @@
 
 const char* readBinary(const char* path, uint32_t* p_size);
 
-#define _CRT_SECURE_NO_WARNINGS
-
-#pragma warning (disable: 26812 4996)
-
-#include <cglm/cglm.h>
+#ifdef _MSC_VER
+#pragma warning (disable: 6011)
+#endif//_MSC_VER
 
 int main(void) {
 
-	const char* application_name = "Gaia Universe Model";
-	const uint32_t width = 720;
-	const uint32_t height = 480;
-	assert(glfwInit());
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow* window = glfwCreateWindow(width, height, application_name, NULL, NULL);
-	uint32_t extensions_count = 0;
-	const char** extensions_names = glfwGetRequiredInstanceExtensions(&extensions_count);
+	ShEngine engine = { 0 };
+	shWindowSetup("SH-Engine Editor", 720, 480, &engine.window);
+	shCreateInstance(&engine.core, "SH-Engine editor", "SH-Engine", engine.window.instance_extension_count, engine.window.pp_instance_extensions);
+	shCreateWindowSurface(&engine);
+	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT);
+	shSetLogicalDevice(&engine.core);
+	shGetGraphicsQueue(&engine.core);
+	shGetComputeQueue(&engine.core);
+	shInitSwapchainData(&engine.core);
+	shInitDepthData(&engine.core);
+	shCreateRenderPass(&engine.core);
+	shSetFramebuffers(&engine.core);
+	shSetSyncObjects(&engine.core);
+	shCreateGraphicsCommandBuffer(&engine.core);
 
-	ShVkCore core = { 0 };
-	shCreateInstance(&core, application_name, "shVulkan Engine", extensions_count, extensions_names);
-	glfwCreateWindowSurface(core.instance, window, NULL, &core.surface.surface);
-	core.surface.width = width;
-	core.surface.height = height;
-
-	shSelectPhysicalDevice(&core, SH_VK_CORE_GRAPHICS);
-	shSetLogicalDevice(&core);
-	shGetGraphicsQueue(&core);
-	shInitSwapchainData(&core);
-	shInitDepthData(&core);
-	shCreateRenderPass(&core);
-	shSetFramebuffers(&core);
-	shSetSyncObjects(&core);
-	shCreateGraphicsCommandBuffer(&core);
-
-	ShVkGraphicsPipeline pipeline = { 0 };
-
+	engine.material_count = 1;
+	engine.p_materials = calloc(1, sizeof(ShMaterialHost));
 	uint32_t vertex_shader_size = 0;
 	uint32_t fragment_shader_size = 0;
 	const char* vertex_code = readBinary("../shaders/bin/celestialBody.vert.spv", &vertex_shader_size);
 	const char* fragment_code = readBinary("../shaders/bin/celestialBody.frag.spv", &fragment_shader_size);
-	shCreateShaderModule(core.device, vertex_shader_size, vertex_code, &pipeline);
-	shCreateShaderModule(core.device, fragment_shader_size, fragment_code, &pipeline);
-	shCreateShaderStage(core.device, pipeline.shader_modules[0], VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
-	shCreateShaderStage(core.device, pipeline.shader_modules[1], VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
+	shCreateShaderModule(engine.core.device, vertex_shader_size, vertex_code, &engine.p_materials[0].pipeline);
+	shCreateShaderModule(engine.core.device, fragment_shader_size, fragment_code, &engine.p_materials[0].pipeline);
+	shCreateShaderStage(engine.core.device, engine.p_materials[0].pipeline.shader_modules[0], VK_SHADER_STAGE_VERTEX_BIT, &engine.p_materials[0].pipeline);
+	shCreateShaderStage(engine.core.device, engine.p_materials[0].pipeline.shader_modules[1], VK_SHADER_STAGE_FRAGMENT_BIT, &engine.p_materials[0].pipeline);
 
-	ShVkFixedStates fixed_states = { 0 };
-	shSetVertexInputAttribute(0, SH_VEC1_SIGNED_FLOAT, 0, 4, &fixed_states); //asc
-	shSetVertexInputAttribute(1, SH_VEC1_SIGNED_FLOAT, 4, 4, &fixed_states); //dec
-	shSetVertexInputAttribute(2, SH_VEC1_SIGNED_FLOAT, 8, 4, &fixed_states); //baricentric_distance
-	shSetVertexInputAttribute(3, SH_VEC1_SIGNED_FLOAT,12, 4, &fixed_states); //teff
-	shSetVertexInputAttribute(4, SH_VEC1_SIGNED_FLOAT,16, 4, &fixed_states); //radius
+	shSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, 128, &engine.p_materials[0].pipeline);
 
-	shSetFixedStates(&core, SH_FIXED_STATES_POLYGON_MODE_POINTS | SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST, &fixed_states);
-	shSetupGraphicsPipeline(&core, fixed_states, &pipeline);
+	shSetVertexInputAttribute(0, SH_VEC1_SIGNED_FLOAT, 0, 4, &engine.p_materials[0].fixed_states); //asc
+	shSetVertexInputAttribute(1, SH_VEC1_SIGNED_FLOAT, 4, 4, &engine.p_materials[0].fixed_states); //dec
+	shSetVertexInputAttribute(2, SH_VEC1_SIGNED_FLOAT, 8, 4, &engine.p_materials[0].fixed_states); //baricentric_distance
+	shSetVertexInputAttribute(3, SH_VEC1_SIGNED_FLOAT,12, 4, &engine.p_materials[0].fixed_states); //teff
+	shSetVertexInputAttribute(4, SH_VEC1_SIGNED_FLOAT,16, 4, &engine.p_materials[0].fixed_states); //radius
+
+	shSetFixedStates(&engine.core, SH_FIXED_STATES_POLYGON_MODE_POINTS | SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST, &engine.p_materials[0].fixed_states);
+	shSetupGraphicsPipeline(&engine.core, engine.p_materials[0].fixed_states, &engine.p_materials[0].pipeline);
 
 	//typedef struct celestialbody_t {
 	//	double ra;
@@ -73,53 +64,89 @@ int main(void) {
 	//	float teff;
 	//	float radius;
 	//}celestialbody_t;
-	#define CELESTIAL_BODY_SIZE 20
-	#define UNIVERSE_MODEL_REGION_SIZE CELESTIAL_BODY_SIZE * 800000
-	void* p_celestial_bodies = calloc(1, UNIVERSE_MODEL_REGION_SIZE);
-	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF | GAIA_RADIUS;
-	gaiaReadBinary("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_4999.bin", celestial_body_flags, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
+	#define CELESTIAL_BODY_SIZE 20	
+	#define CELESTIAL_BODY_COUNT 800000
+	#define UNIVERSE_MODEL_REGION_SIZE CELESTIAL_BODY_SIZE * CELESTIAL_BODY_COUNT
+	#define UNIVERSE_MODEL_REGIONS_SIZE UNIVERSE_MODEL_REGION_SIZE * 2
 
-	//gaia_real* p0 = (gaia_real*)&(((char*)p_celestial_bodies)[0]);
-	//gaia_real* p1 = (gaia_real*)&(((char*)p_celestial_bodies)[20]);
+	void* p_celestial_bodies = calloc(1, UNIVERSE_MODEL_REGIONS_SIZE);
+	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF | GAIA_RADIUS;
+	gaiaReadBinary("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0000.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
+	gaiaReadBinary("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0001.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
+
+	gaia_real* p0 = (gaia_real*)&(((char*)p_celestial_bodies)[0]);
+	gaia_real* dist0 = (gaia_real*)&(((char*)p_celestial_bodies)[8]);
+	gaia_real* teff0 = (gaia_real*)&(((char*)p_celestial_bodies)[12]);
+	gaia_real* rad0 = (gaia_real*)&(((char*)p_celestial_bodies)[16]);
 	//printf("ra0: %f\n", *p0);
-	//printf("ra1: %f\n", *p1);
-	
-	float celestial_body[5] = {
-		0.01f, 
-		0.01f,
-		1.0f,
-		0.0f,
-		0.0f
-	};
+	//printf("dist0: %f\n", *dist0);
+	//printf("teff0: %f\n", *teff0);
+	//printf("rad0: %f\n", *rad0);
+	//
+	//float celestial_bodies[10] = {
+	//	0.1f, 
+	//	0.1f,
+	//	1.0f,
+	//	1.0f,
+	//	1.0f,
+	//	0.1f,
+	//	0.1f,
+	//	5.0f,
+	//	1.0f,
+	//	1.0f
+	//};
 
 	VkBuffer celestial_body_buffer;
 	VkDeviceMemory celestial_body_buffer_memory;
-	shCreateVertexBuffer(&core, UNIVERSE_MODEL_REGION_SIZE, &celestial_body_buffer);
-	shAllocateVertexBuffer(&core, celestial_body_buffer, &celestial_body_buffer_memory);
-	shWriteVertexBufferMemory(&core, celestial_body_buffer_memory, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
+	shCreateVertexBuffer(&engine.core, UNIVERSE_MODEL_REGION_SIZE, &celestial_body_buffer);
+	shAllocateVertexBuffer(&engine.core, celestial_body_buffer, &celestial_body_buffer_memory);
+	shWriteVertexBufferMemory(&engine.core, celestial_body_buffer_memory, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
 
-	while (!glfwWindowShouldClose(window)) {
+	shCreateScene(&engine.scenes[0]);
+	const uint32_t camera_entity = shCreateEntity(&engine.scenes[0]);
+	ShCamera* p_camera = shAddShCamera(&engine.scenes[0], camera_entity);
+	p_camera->fov = 45.0f;
+	p_camera->nc = 1.0E-3f;
+	p_camera->fc = 1.0E38f;
+	p_camera->speed = 2.0f;
+	p_camera->flags = SH_CAMERA_SETUP_FREE_FLIGHT;
+	const ShTransform* p_camera_transform = shAddShTransform(&engine.scenes[0], camera_entity);
+	shSceneInit(&engine, 0);
+
+	void* push_constant[128 / 8];
+	while (shIsWindowActive(engine.window.window)) {
 		glfwPollEvents();
-		shFrameReset(&core);
+		shGetTime(&engine.time);
+		shGetCursorPosition(&engine.window);
+
+		shFrameReset(&engine.core);
 		uint32_t frame_index = 0;
-		shFrameBegin(&core, &frame_index);
+		shFrameBegin(&engine.core, &frame_index);
 
-		shBindPipeline(&core, &pipeline);
+		shSceneUpdate(&engine, 0);
 
-		//celestial_body[1] += 0.08f;
-		//celestial_body[0] += 0.08f;
-		//shWriteVertexBufferMemory(&core, celestial_body_buffer_memory, CELESTIAL_BODY_SIZE, celestial_body);
-		shBindVertexBuffer(&core, &celestial_body_buffer);
-		shDraw(&core, 1);
+		shBindPipeline(&engine.core, &engine.p_materials[0].pipeline);
 
-		shEndPipeline(&pipeline);
-		shFrameEnd(&core, frame_index);
+		memcpy(push_constant, p_camera->projection, 64);
+		memcpy(&push_constant[64/8], p_camera->view, 64);
+		shPushConstants(&engine.core, push_constant, &engine.p_materials[0].pipeline);
+
+		shBindVertexBuffer(&engine.core, &celestial_body_buffer);
+
+		shDraw(&engine.core, CELESTIAL_BODY_COUNT * 2);
+
+		shEndPipeline(&engine.p_materials[0].pipeline);
+		
+
+
+		shFrameEnd(&engine.core, frame_index);
 	}
 	free(p_celestial_bodies);
 
-	shClearBufferMemory(core.device, celestial_body_buffer, celestial_body_buffer_memory);
-	shDestroyPipeline(&core, &pipeline);
-	shVulkanRelease(&core);
+	shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
+	shSceneRelease(&engine, 0);
+	shClearBufferMemory(engine.core.device, celestial_body_buffer, celestial_body_buffer_memory);
+	shVulkanRelease(&engine.core);
     return 0;
 }
 
