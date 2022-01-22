@@ -8,19 +8,18 @@ layout (location = 4) in float radius;
 
 layout (location = 0) out vec4 bodyPosition;
 
+layout (push_constant) uniform pushConstant {
+    mat4 projection;
+    mat4 view;
+} pconst;
+
 void main() {
-    mat4 model = mat4(
-        -1.0, 0.0, 0.0, 0.0,
-         0.0,-1.0, 0.0, 0.0,
-         0.0, 0.0,-1.0, 0.0,
-         0.0, 0.0, 0.0, 1.0
-    );
-    gl_PointSize = 5.0;
-    
-    bodyPosition = vec4(
-        baricentric_distance * sin(dec) * cos(asc), 
-        baricentric_distance * sin(dec) * sin(asc), 
-        baricentric_distance * cos(dec), 
+    gl_PointSize = 1.0;
+    float dist = baricentric_distance * 0.01;
+    bodyPosition = pconst.projection * pconst.view * vec4(
+        dist * sin(dec) * cos(asc), 
+        dist * sin(dec) * sin(asc), 
+        dist * cos(dec), 
         1.0);
     gl_Position = bodyPosition;
 }
