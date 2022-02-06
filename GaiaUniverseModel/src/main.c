@@ -66,22 +66,25 @@ int main(void) {
 	//}celestialbody_t;
 	#define CELESTIAL_BODY_SIZE 20	
 	#define CELESTIAL_BODY_COUNT 800000
+	#define UNIVERSE_MODEL_REGIONS_COUNT 1
 	#define UNIVERSE_MODEL_REGION_SIZE CELESTIAL_BODY_SIZE * CELESTIAL_BODY_COUNT
-	#define UNIVERSE_MODEL_REGIONS_SIZE UNIVERSE_MODEL_REGION_SIZE * 2
+	#define UNIVERSE_MODEL_REGIONS_SIZE UNIVERSE_MODEL_REGION_SIZE * UNIVERSE_MODEL_REGIONS_COUNT
 
 	void* p_celestial_bodies = calloc(1, UNIVERSE_MODEL_REGIONS_SIZE);
 	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF | GAIA_RADIUS;
-	gaiaReadBinary("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0000.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
-	gaiaReadBinary("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0001.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
+	gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_4001.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
+	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0001.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
+	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0002.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*2]);
+	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0003.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*3]);
 
 	gaia_real* p0 = (gaia_real*)&(((char*)p_celestial_bodies)[0]);
 	gaia_real* dist0 = (gaia_real*)&(((char*)p_celestial_bodies)[8]);
 	gaia_real* teff0 = (gaia_real*)&(((char*)p_celestial_bodies)[12]);
 	gaia_real* rad0 = (gaia_real*)&(((char*)p_celestial_bodies)[16]);
-	//printf("ra0: %f\n", *p0);
-	//printf("dist0: %f\n", *dist0);
-	//printf("teff0: %f\n", *teff0);
-	//printf("rad0: %f\n", *rad0);
+	printf("ra0: %f\n", *p0);
+	printf("dist0: %f\n", *dist0);
+	printf("teff0: %f\n", *teff0);
+	printf("rad0: %f\n", *rad0);
 	//
 	//float celestial_bodies[10] = {
 	//	0.1f, 
@@ -98,14 +101,14 @@ int main(void) {
 
 	VkBuffer celestial_body_buffer;
 	VkDeviceMemory celestial_body_buffer_memory;
-	shCreateVertexBuffer(&engine.core, UNIVERSE_MODEL_REGION_SIZE, &celestial_body_buffer);
+	shCreateVertexBuffer(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE, &celestial_body_buffer);
 	shAllocateVertexBuffer(&engine.core, celestial_body_buffer, &celestial_body_buffer_memory);
-	shWriteVertexBufferMemory(&engine.core, celestial_body_buffer_memory, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
+	shWriteVertexBufferMemory(&engine.core, celestial_body_buffer_memory, UNIVERSE_MODEL_REGIONS_SIZE, p_celestial_bodies);
 
 	shCreateScene(&engine.scenes[0]);
 	const uint32_t camera_entity = shCreateEntity(&engine.scenes[0]);
 	ShCamera* p_camera = shAddShCamera(&engine.scenes[0], camera_entity);
-	p_camera->fov = 45.0f;
+	p_camera->fov = 1.0f;
 	p_camera->nc = 1.0E-3f;
 	p_camera->fc = 1.0E38f;
 	p_camera->speed = 2.0f;
@@ -133,7 +136,7 @@ int main(void) {
 
 		shBindVertexBuffer(&engine.core, &celestial_body_buffer);
 
-		shDraw(&engine.core, CELESTIAL_BODY_COUNT * 2);
+		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE * 3);
 
 		shEndPipeline(&engine.p_materials[0].pipeline);
 		
