@@ -136,5 +136,5 @@ void main() {
         }
     }
 
-    fragColor = temperature_color * distance(ubo.camera_position, starPosition);
+    fragColor = temperature_color / pow(distance(ubo.camera_position, starPosition), 2) * 10.0;
 }

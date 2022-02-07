@@ -50,6 +50,12 @@ int main(void) {
 
 	shSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, 128, &engine.p_materials[0].pipeline);
 
+	shCreateUniformBuffer(&engine.core, 0, 16, &engine.p_materials[0].pipeline);
+	shAllocateUniformBuffers(&engine.core, &engine.p_materials[0].pipeline);
+	shDescriptorSetLayout(&engine.core, 0, VK_SHADER_STAGE_FRAGMENT_BIT, &engine.p_materials[0].pipeline);
+	shCreateDescriptorPools(&engine.core, &engine.p_materials[0].pipeline);
+	shAllocateDescriptorSets(&engine.core, &engine.p_materials[0].pipeline);
+
 	shSetVertexInputAttribute(0, SH_VEC1_SIGNED_FLOAT, 0, 4, &engine.p_materials[0].fixed_states); //asc
 	shSetVertexInputAttribute(1, SH_VEC1_SIGNED_FLOAT, 4, 4, &engine.p_materials[0].fixed_states); //dec
 	shSetVertexInputAttribute(2, SH_VEC1_SIGNED_FLOAT, 8, 4, &engine.p_materials[0].fixed_states); //baricentric_distance
@@ -120,7 +126,11 @@ int main(void) {
 	const ShTransform* p_camera_transform = shAddShTransform(&engine.scenes[0], camera_entity);
 	shSceneInit(&engine, 0);
 
-	void* push_constant[128 / 8];
+	void* push_constant[128 / sizeof(void*)];
+	void* uniform_buffer[16 / sizeof(void*)];
+	float one = 1.0f;
+	memcpy(&((char*)uniform_buffer)[12], &one, 4);
+	
 	while (shIsWindowActive(engine.window.window)) {
 		glfwPollEvents();
 		shGetTime(&engine.time);
@@ -134,13 +144,20 @@ int main(void) {
 
 		shBindPipeline(&engine.core, &engine.p_materials[0].pipeline);
 
+		shUpdateUniformBuffers(&engine.core, &engine.p_materials[0].pipeline);
+
+		memcpy(uniform_buffer, p_camera_transform->position, 12);
+		shWriteUniformBufferMemory(&engine.core, 0, uniform_buffer, &engine.p_materials[0].pipeline);
+		shBindUniformBuffer(&engine.core, 0, &engine.p_materials[0].pipeline);
+
 		memcpy(push_constant, p_camera->projection, 64);
-		memcpy(&push_constant[64/8], p_camera->view, 64);
+		memcpy(&push_constant[64/sizeof(void*)], p_camera->view, 64);
 		shPushConstants(&engine.core, push_constant, &engine.p_materials[0].pipeline);
+
 
 		shBindVertexBuffer(&engine.core, &celestial_body_buffer);
 
-		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE * 3);
+		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE);
 
 		shEndPipeline(&engine.p_materials[0].pipeline);
 		
@@ -150,6 +167,7 @@ int main(void) {
 
 	gaiaWebShutdown(gaia);
 
+	shClearUniformBufferMemory(&engine.core, 0, &engine.p_materials[0].pipeline);
 	shDestroyPipeline(&engine.core, &materials[0].pipeline);
 	shSceneRelease(&engine, 0);
 	shClearBufferMemory(engine.core.device, celestial_body_buffer, celestial_body_buffer_memory);
