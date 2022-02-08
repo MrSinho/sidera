@@ -1,3 +1,6 @@
 [submodule "externals/Gaia_Archive_Tools"]
 	path = externals/Gaia_Archive_Tools
 	url = https://github.com/MrSinho/Gaia_Archive_Tools.git
+[submodule "externals/SH-Engine"]
+	path = externals/SH-Engine
+	url = https://github.com/MrSinho/SH-Engine
