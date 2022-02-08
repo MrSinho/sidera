@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <engine/shEngine.h>
 
 #include <shvulkan/shVkCore.h>
@@ -22,7 +26,7 @@ const char* readBinary(const char* path, uint32_t* p_size);
 int main(void) {
 
 	ShEngine engine = { 0 };
-	shWindowSetup("SH-Engine Editor", 720, 480, &engine.window);
+	shWindowSetup("SH-Engine Editor", 1280, 720, &engine.window);
 	shCreateInstance(&engine.core, "SH-Engine editor", "SH-Engine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
 	shCreateWindowSurface(&engine);
 	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT);
@@ -74,7 +78,7 @@ int main(void) {
 	//}celestialbody_t;
 	#define CELESTIAL_BODY_SIZE 20	
 	#define CELESTIAL_BODY_COUNT 800000
-	#define UNIVERSE_MODEL_REGIONS_COUNT 1
+	#define UNIVERSE_MODEL_REGIONS_COUNT 6
 	#define UNIVERSE_MODEL_REGION_SIZE CELESTIAL_BODY_SIZE * CELESTIAL_BODY_COUNT
 	#define UNIVERSE_MODEL_REGIONS_SIZE UNIVERSE_MODEL_REGION_SIZE * UNIVERSE_MODEL_REGIONS_COUNT
 
@@ -83,9 +87,11 @@ int main(void) {
 	
 	gaiaWebHandle gaia = gaiaWebSetup(1);
 	gaiaReadWeb(gaia, "4001", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
-	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0001.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
-	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0002.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*2]);
-	//gaiaReadBinaryFile("../../Gaia_Archive_Tools/gaia_bin/GaiaUniverseModel_0003.bin", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*3]);
+	gaiaReadWeb(gaia, "4002", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
+	gaiaReadWeb(gaia, "4003", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*2]);
+	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*3]);
+	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*4]);
+	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*5]);
 
 	gaia_real* p0 = (gaia_real*)&(((char*)p_celestial_bodies)[0]);
 	gaia_real* dist0 = (gaia_real*)&(((char*)p_celestial_bodies)[8]);
@@ -157,7 +163,7 @@ int main(void) {
 
 		shBindVertexBuffer(&engine.core, &celestial_body_buffer);
 
-		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE);
+		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE / CELESTIAL_BODY_SIZE);
 
 		shEndPipeline(&engine.p_materials[0].pipeline);
 		
@@ -197,3 +203,7 @@ const char* readBinary(const char* path, uint32_t* p_size) {
 	fclose(stream);
 	return code;
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
