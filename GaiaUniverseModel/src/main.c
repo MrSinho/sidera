@@ -2,6 +2,14 @@
 extern "C" {
 #endif//__cplusplus
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4005 4996 6011)
+#endif//_MSC_VER
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+
 #include <engine/shEngine.h>
 
 #include <shvulkan/shVkCore.h>
@@ -15,19 +23,16 @@ extern "C" {
 
 #include <gaia_archive_tools/gaiaArchiveTools.h>
 
-#include <assert.h>
 
 const char* readBinary(const char* path, uint32_t* p_size);
 
-#ifdef _MSC_VER
-#pragma warning (disable: 6011)
-#endif//_MSC_VER
+void gaiaUniverseModelGetId(const uint32_t id, char* s_dst);
 
 int main(void) {
 
 	ShEngine engine = { 0 };
-	shWindowSetup("SH-Engine Editor", 1280, 720, &engine.window);
-	shCreateInstance(&engine.core, "SH-Engine editor", "SH-Engine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
+	shWindowSetup("Gaia EDR3 Universe Model", 1900, 1000, &engine.window);
+	shCreateInstance(&engine.core, "Gaia EDR3 Universe Model", "SH-Engine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
 	shCreateWindowSurface(&engine);
 	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT);
 	shSetLogicalDevice(&engine.core);
@@ -45,10 +50,12 @@ int main(void) {
 	engine.p_materials = materials;
 	uint32_t vertex_shader_size = 0;
 	uint32_t fragment_shader_size = 0;
-	const char* vertex_code = readBinary("../shaders/bin/celestialBody.vert.spv", &vertex_shader_size);
-	const char* fragment_code = readBinary("../shaders/bin/celestialBody.frag.spv", &fragment_shader_size);
+	char* vertex_code = (char*)readBinary("../shaders/bin/celestialBody.vert.spv", &vertex_shader_size);
+	char* fragment_code = (char*)readBinary("../shaders/bin/celestialBody.frag.spv", &fragment_shader_size);
 	shCreateShaderModule(engine.core.device, vertex_shader_size, vertex_code, &engine.p_materials[0].pipeline);
 	shCreateShaderModule(engine.core.device, fragment_shader_size, fragment_code, &engine.p_materials[0].pipeline);
+	free(vertex_code);
+	free(fragment_code);
 	shCreateShaderStage(engine.core.device, engine.p_materials[0].pipeline.shader_modules[0], VK_SHADER_STAGE_VERTEX_BIT, &engine.p_materials[0].pipeline);
 	shCreateShaderStage(engine.core.device, engine.p_materials[0].pipeline.shader_modules[1], VK_SHADER_STAGE_FRAGMENT_BIT, &engine.p_materials[0].pipeline);
 
@@ -59,14 +66,13 @@ int main(void) {
 	shDescriptorSetLayout(&engine.core, 0, VK_SHADER_STAGE_FRAGMENT_BIT, &engine.p_materials[0].pipeline);
 	shCreateDescriptorPools(&engine.core, &engine.p_materials[0].pipeline);
 	shAllocateDescriptorSets(&engine.core, &engine.p_materials[0].pipeline);
-
+	
 	shSetVertexInputAttribute(0, SH_VEC1_SIGNED_FLOAT, 0, 4, &engine.p_materials[0].fixed_states); //asc
 	shSetVertexInputAttribute(1, SH_VEC1_SIGNED_FLOAT, 4, 4, &engine.p_materials[0].fixed_states); //dec
 	shSetVertexInputAttribute(2, SH_VEC1_SIGNED_FLOAT, 8, 4, &engine.p_materials[0].fixed_states); //baricentric_distance
 	shSetVertexInputAttribute(3, SH_VEC1_SIGNED_FLOAT,12, 4, &engine.p_materials[0].fixed_states); //teff
-	shSetVertexInputAttribute(4, SH_VEC1_SIGNED_FLOAT,16, 4, &engine.p_materials[0].fixed_states); //radius
 
-	shSetFixedStates(&engine.core, SH_FIXED_STATES_POLYGON_MODE_POINTS | SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST, &engine.p_materials[0].fixed_states);
+	shSetFixedStates(&engine.core, SH_FIXED_STATES_POLYGON_MODE_FACE | SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST, &engine.p_materials[0].fixed_states);
 	shSetupGraphicsPipeline(&engine.core, engine.p_materials[0].fixed_states, &engine.p_materials[0].pipeline);
 
 	//typedef struct celestialbody_t {
@@ -74,60 +80,54 @@ int main(void) {
 	//	double dec;
 	//	float baricentric_distance;
 	//	float teff;
-	//	float radius;
 	//}celestialbody_t;
-	#define CELESTIAL_BODY_SIZE 20	
+	#define CELESTIAL_BODY_SIZE 16
 	#define CELESTIAL_BODY_COUNT 800000
-	#define UNIVERSE_MODEL_REGIONS_COUNT 6
 	#define UNIVERSE_MODEL_REGION_SIZE CELESTIAL_BODY_SIZE * CELESTIAL_BODY_COUNT
-	#define UNIVERSE_MODEL_REGIONS_SIZE UNIVERSE_MODEL_REGION_SIZE * UNIVERSE_MODEL_REGIONS_COUNT
 
-	void* p_celestial_bodies = calloc(1, UNIVERSE_MODEL_REGIONS_SIZE);
-	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF | GAIA_RADIUS;
-	
+	uint32_t available_video_memory = 0;
+	shGetMemoryBudgetProperties(engine.core.physical_device, &available_video_memory, NULL, NULL);
+	available_video_memory /= UNIVERSE_MODEL_REGION_SIZE * 10;
+	available_video_memory *= UNIVERSE_MODEL_REGION_SIZE;
+
+	void* p_celestial_bodies = calloc(1, available_video_memory);
+	assert(p_celestial_bodies != NULL);
+
+	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
+
 	gaiaWebHandle gaia = gaiaWebSetup(1);
-	gaiaReadWeb(gaia, "4001", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, p_celestial_bodies);
-	gaiaReadWeb(gaia, "4002", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE]);
-	gaiaReadWeb(gaia, "4003", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*2]);
-	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*3]);
-	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*4]);
-	gaiaReadWeb(gaia, "4004", celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE*5]);
+	uint32_t used_vram = 0;
+	for (uint32_t i = 0; used_vram < available_video_memory; i++) {
+		char s_id[5] = "0000";
+		gaiaUniverseModelGetId(i, s_id);
+		gaiaReadWeb(gaia, s_id, celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE * i]);
+		used_vram += UNIVERSE_MODEL_REGION_SIZE;
+	}
 
-	gaia_real* p0 = (gaia_real*)&(((char*)p_celestial_bodies)[0]);
-	gaia_real* dist0 = (gaia_real*)&(((char*)p_celestial_bodies)[8]);
-	gaia_real* teff0 = (gaia_real*)&(((char*)p_celestial_bodies)[12]);
-	gaia_real* rad0 = (gaia_real*)&(((char*)p_celestial_bodies)[16]);
-	printf("ra0: %f\n", *p0);
-	printf("dist0: %f\n", *dist0);
-	printf("teff0: %f\n", *teff0);
-	printf("rad0: %f\n", *rad0);
-	//
-	//float celestial_bodies[10] = {
-	//	0.1f, 
-	//	0.1f,
-	//	1.0f,
-	//	1.0f,
-	//	1.0f,
-	//	0.1f,
-	//	0.1f,
-	//	5.0f,
-	//	1.0f,
-	//	1.0f
-	//};
+	VkBuffer celestial_body_buffers[64];
+	VkDeviceMemory celestial_body_buffers_memory[64];
+	const uint32_t MAX_GPU_HEAP_SIZE = 67108864;
+	uint32_t vertex_buffer_count = (used_vram > MAX_GPU_HEAP_SIZE) ? (used_vram / MAX_GPU_HEAP_SIZE) : 1;
+	uint32_t written_memory = 0;
 
-	VkBuffer celestial_body_buffer;
-	VkDeviceMemory celestial_body_buffer_memory;
-	shCreateVertexBuffer(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE, &celestial_body_buffer);
-	shAllocateVertexBuffer(&engine.core, celestial_body_buffer, &celestial_body_buffer_memory);
-	shWriteVertexBufferMemory(&engine.core, celestial_body_buffer_memory, UNIVERSE_MODEL_REGIONS_SIZE, p_celestial_bodies);
+	for (uint32_t i = 0; i < vertex_buffer_count; i++) {
+		uint32_t buffer_size = used_vram > MAX_GPU_HEAP_SIZE ? MAX_GPU_HEAP_SIZE : used_vram;
+		shCreateVertexBuffer(&engine.core, buffer_size, &celestial_body_buffers[i]);
+
+		shAllocateVertexBuffer(&engine.core, celestial_body_buffers[i], &celestial_body_buffers_memory[i]);
+
+		shWriteVertexBufferMemory(&engine.core, celestial_body_buffers_memory[i], buffer_size, &((char*)p_celestial_bodies)[written_memory]);
+		written_memory += buffer_size;
+		if (written_memory >= used_vram) { break; }
+	}
 
 	shCreateScene(&engine.scenes[0]);
 	const uint32_t camera_entity = shCreateEntity(&engine.scenes[0]);
 	ShCamera* p_camera = shAddShCamera(&engine.scenes[0], camera_entity);
 	p_camera->fov = 1.0f;
 	p_camera->nc = 1.0E-3f;
-	p_camera->fc = 1.0E38f;
-	p_camera->speed = 2.0f;
+	p_camera->fc = 1.0E3f;
+	p_camera->speed = 0.5f;
 	p_camera->flags = SH_CAMERA_SETUP_FREE_FLIGHT;
 	const ShTransform* p_camera_transform = shAddShTransform(&engine.scenes[0], camera_entity);
 	shSceneInit(&engine, 0);
@@ -141,6 +141,13 @@ int main(void) {
 		glfwPollEvents();
 		shGetTime(&engine.time);
 		shGetCursorPosition(&engine.window);
+
+		if (shIsKeyPressed(engine.window, SH_KEY_LEFT_SHIFT)) {
+			p_camera->speed = 5.0f;
+		}
+		if (shIsKeyReleased(engine.window, GLFW_KEY_LEFT_SHIFT)) {
+			p_camera->speed = 0.1f;
+		}
 
 		shFrameReset(&engine.core);
 		uint32_t frame_index = 0;
@@ -160,10 +167,11 @@ int main(void) {
 		memcpy(&push_constant[64/sizeof(void*)], p_camera->view, 64);
 		shPushConstants(&engine.core, push_constant, &engine.p_materials[0].pipeline);
 
+		for (uint32_t i = 0; i < vertex_buffer_count; i++) {
+			shBindVertexBuffer(&engine.core, &celestial_body_buffers[i]);
+		}
 
-		shBindVertexBuffer(&engine.core, &celestial_body_buffer);
-
-		shDraw(&engine.core, UNIVERSE_MODEL_REGIONS_SIZE / CELESTIAL_BODY_SIZE);
+		shDraw(&engine.core, used_vram / CELESTIAL_BODY_SIZE);
 
 		shEndPipeline(&engine.p_materials[0].pipeline);
 		
@@ -176,16 +184,13 @@ int main(void) {
 	shClearUniformBufferMemory(&engine.core, 0, &engine.p_materials[0].pipeline);
 	shDestroyPipeline(&engine.core, &materials[0].pipeline);
 	shSceneRelease(&engine, 0);
-	shClearBufferMemory(engine.core.device, celestial_body_buffer, celestial_body_buffer_memory);
+	for (uint32_t i = 0; i < vertex_buffer_count; i++) {
+		shClearBufferMemory(engine.core.device, celestial_body_buffers[i], celestial_body_buffers_memory[i]);
+	}
 	shVulkanRelease(&engine.core);
     return 0;
 }
 
-#ifdef _MSC_VER
-#pragma warning (disable: 4996)
-#endif//_MSC_VER
-#include <stdlib.h>
-#include <stdio.h>
 const char* readBinary(const char* path, uint32_t* p_size) {
 	FILE* stream = fopen(path, "rb");
 	if (stream == NULL) {
@@ -202,6 +207,21 @@ const char* readBinary(const char* path, uint32_t* p_size) {
 	*p_size = code_size;
 	fclose(stream);
 	return code;
+}
+
+void gaiaUniverseModelGetId(const uint32_t id, char* s_dst) {
+	if (id >= 1000) {
+		itoa(id, s_dst, 10);
+	}
+	else if (100 <= id && id < 1000) {
+		itoa(id, &s_dst[1], 10);
+	}
+	else if (10 <= id && id < 100) {
+		itoa(id, &s_dst[2], 10);
+	}
+	else if (id < 10) {
+		itoa(id, &s_dst[3], 10);
+	}
 }
 
 #ifdef __cplusplus

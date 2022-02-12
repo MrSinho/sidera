@@ -2,7 +2,6 @@
 
 layout      (location = 0) in vec4 starPosition;
 layout      (location = 1) in float teff;
-layout      (location = 2) in float radius;
 
 layout (location = 0) out vec4 fragColor;
 
@@ -135,6 +134,6 @@ void main() {
             break;
         }
     }
-
-    fragColor = temperature_color / pow(distance(ubo.camera_position, starPosition), 2) * 10.0;
+    
+    fragColor = temperature_color * teff/80.0 / pow(distance(ubo.camera_position, starPosition), 2);
 }
