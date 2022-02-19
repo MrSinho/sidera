@@ -95,13 +95,14 @@ int main(void) {
 
 	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
 
-	gaiaWebHandle gaia = gaiaWebSetup(1);
 	uint32_t used_vram = 0;
 	for (uint32_t i = 0; used_vram < available_video_memory; i++) {
 		char s_id[5] = "0000";
 		gaiaUniverseModelGetId(i, s_id);
-		gaiaReadWeb(gaia, s_id, celestial_body_flags, 0, UNIVERSE_MODEL_REGION_SIZE, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE * i]);
-		used_vram += UNIVERSE_MODEL_REGION_SIZE;
+		uint32_t bytes_read = 0;
+		gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE * i]);
+		used_vram += bytes_read;
+		break;
 	}
 
 	VkBuffer celestial_body_buffers[64];
@@ -178,8 +179,6 @@ int main(void) {
 		shFrameEnd(&engine.core, frame_index);
 	}
 	free(p_celestial_bodies);
-
-	gaiaWebShutdown(gaia);
 
 	shClearUniformBufferMemory(&engine.core, 0, &engine.p_materials[0].pipeline);
 	shDestroyPipeline(&engine.core, &materials[0].pipeline);
