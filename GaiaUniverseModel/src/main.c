@@ -102,7 +102,6 @@ int main(void) {
 		uint32_t bytes_read = 0;
 		gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE * i]);
 		used_vram += bytes_read;
-		break;
 	}
 
 	VkBuffer celestial_body_buffers[64];
