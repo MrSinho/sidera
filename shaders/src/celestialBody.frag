@@ -158,5 +158,5 @@ void main() {
     
     fragColor = saturation_matrix(2.0) * temperature_color *
                 teff / 80.0 /
-                pow(distance(ubo.camera_position, starPosition), 2);
+                pow(distance(ubo.camera_position, starPosition), 2) * 10.0;
 }

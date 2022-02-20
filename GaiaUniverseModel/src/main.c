@@ -87,7 +87,7 @@ int main(void) {
 
 	uint32_t available_video_memory = 0;
 	shGetMemoryBudgetProperties(engine.core.physical_device, &available_video_memory, NULL, NULL);
-	available_video_memory /= UNIVERSE_MODEL_REGION_SIZE * 10;
+	available_video_memory /= UNIVERSE_MODEL_REGION_SIZE * 20;
 	available_video_memory *= UNIVERSE_MODEL_REGION_SIZE;
 
 	void* p_celestial_bodies = calloc(1, available_video_memory);
@@ -95,20 +95,28 @@ int main(void) {
 
 	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
 
-	uint32_t used_vram = 0;
-	for (uint32_t i = 0; used_vram < available_video_memory; i++) {
+	uint32_t used_vram = 0;	
+	void* _src = calloc(1, 175000000);
+	assert(_src != NULL);
+	for (uint32_t i = 0; i < 25; i++) {
 		char s_id[5] = "0000";
 		gaiaUniverseModelGetId(i, s_id);
 		uint32_t bytes_read = 0;
-		gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, &((char*)p_celestial_bodies)[UNIVERSE_MODEL_REGION_SIZE * i]);
+		gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, _src);
+		if (used_vram + bytes_read > available_video_memory) {
+			break;
+		}
+		memcpy(&((char*)p_celestial_bodies)[used_vram], _src, bytes_read);
 		used_vram += bytes_read;
 	}
+	free(_src);
 
 	VkBuffer celestial_body_buffers[64];
 	VkDeviceMemory celestial_body_buffers_memory[64];
 	const uint32_t MAX_GPU_HEAP_SIZE = 67108864;
 	uint32_t vertex_buffer_count = (used_vram > MAX_GPU_HEAP_SIZE) ? (used_vram / MAX_GPU_HEAP_SIZE) : 1;
 	uint32_t written_memory = 0;
+
 
 	for (uint32_t i = 0; i < vertex_buffer_count; i++) {
 		uint32_t buffer_size = used_vram > MAX_GPU_HEAP_SIZE ? MAX_GPU_HEAP_SIZE : used_vram;
