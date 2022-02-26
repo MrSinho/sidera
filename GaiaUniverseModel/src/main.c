@@ -26,8 +26,6 @@ extern "C" {
 
 const char* readBinary(const char* path, uint32_t* p_size);
 
-void gaiaUniverseModelGetId(const uint32_t id, char* s_dst);
-
 int main(void) {
 
 	ShEngine engine = { 0 };
@@ -96,20 +94,21 @@ int main(void) {
 	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
 
 	uint32_t used_vram = 0;	
-	void* _src = calloc(1, 175000000);
-	assert(_src != NULL);
-	for (uint32_t i = 0; i < 25; i++) {
-		char s_id[5] = "0000";
-		gaiaUniverseModelGetId(i, s_id);
-		uint32_t bytes_read = 0;
-		gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, _src);
-		if (used_vram + bytes_read > available_video_memory) {
-			break;
+	void* src;
+	for (uint32_t i = 0; i < 1; i++) {
+		for (uint32_t j = 0; j < 2; j++) {
+			char s_id[7];
+			gaiaUniverseModelGetId(i, j, s_id);
+			uint32_t bytes_read = 0;
+			gaiaReadWeb(s_id, celestial_body_flags, 0, 0, &bytes_read, &src);
+			if (used_vram + bytes_read > available_video_memory) {
+				break;
+			}
+			memcpy(&((char*)p_celestial_bodies)[used_vram], src, bytes_read);
+			used_vram += bytes_read;
 		}
-		memcpy(&((char*)p_celestial_bodies)[used_vram], _src, bytes_read);
-		used_vram += bytes_read;
 	}
-	free(_src);
+	gaiaFree(src);
 
 	VkBuffer celestial_body_buffers[64];
 	VkDeviceMemory celestial_body_buffers_memory[64];
@@ -213,21 +212,6 @@ const char* readBinary(const char* path, uint32_t* p_size) {
 	*p_size = code_size;
 	fclose(stream);
 	return code;
-}
-
-void gaiaUniverseModelGetId(const uint32_t id, char* s_dst) {
-	if (id >= 1000) {
-		itoa(id, s_dst, 10);
-	}
-	else if (100 <= id && id < 1000) {
-		itoa(id, &s_dst[1], 10);
-	}
-	else if (10 <= id && id < 100) {
-		itoa(id, &s_dst[2], 10);
-	}
-	else if (id < 10) {
-		itoa(id, &s_dst[3], 10);
-	}
 }
 
 #ifdef __cplusplus
