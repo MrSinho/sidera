@@ -55,3 +55,4 @@ build/*
 .vscode/*
 .vs/*
 bin/*
+gaia_resources/*
