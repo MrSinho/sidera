@@ -24,15 +24,14 @@ extern "C" {
 #include <gaia_archive_tools/gaiaArchiveTools.h>
 
 typedef struct GaiaUniverseModelMemory {
-	ShMaterialHost materials[1];
-	void* push_constant[128 / sizeof(void*)];
-	void* uniform_buffer[16 / sizeof(void*)];
-	void* p_celestial_bodies;
-	uint32_t vertex_buffer;
-	uint32_t vertex_buffer_count;
-	VkBuffer vertex_buffers[64];
-	VkDeviceMemory vertex_buffers_memory[64];
-	uint32_t used_vram;
+	ShMaterialHost	materials[1];
+	uint32_t		used_vram;
+	void*			p_celestial_bodies;
+	uint32_t		vertex_buffer_count;
+	VkBuffer		vertex_buffers[64];
+	VkDeviceMemory	vertex_buffers_memory[64];
+	void*			push_constant[128 / sizeof(void*)];
+	void*			uniform_buffer[16 / sizeof(void*)];
 } GaiaUniverseModelMemory;
 
 
@@ -79,15 +78,15 @@ int main(void) {
 	gaiaUniverseModelSceneSetup(&engine);
 	
 	while (shIsWindowActive(engine.window.window)) {
-		glfwPollEvents();
-		shGetTime(&engine.time);
-		shGetCursorPosition(&engine.window);
+		//UPDATE WINDOW
+		shUpdateWindow(&engine);
 
 		//BEGIN FRAME
 		shFrameReset(&engine.core);
 		uint32_t frame_index = 0;
 		shFrameBegin(&engine.core, &frame_index);
 
+		//UPDATE FRAME
 		gaiaUniverseModelSceneUpdate(&engine, &universe_model);
 		shDraw(&engine.core, universe_model.used_vram / CELESTIAL_BODY_SIZE);
 
