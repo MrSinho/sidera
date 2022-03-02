@@ -23,84 +23,9 @@ extern "C" {
 
 #include <gaia_archive_tools/gaiaArchiveTools.h>
 
-typedef struct GaiaUniverseModelMemory {
-	ShMaterialHost	materials[1];
-	uint32_t		used_vram;
-	void*			p_celestial_bodies;
-	uint32_t		vertex_buffer_count;
-	VkBuffer		vertex_buffers[64];
-	VkDeviceMemory	vertex_buffers_memory[64];
-	void*			push_constant[128 / sizeof(void*)];
-	void*			uniform_buffer[16 / sizeof(void*)];
-} GaiaUniverseModelMemory;
+#include "gaia-universe-model/gaiaUniverseModel.h"
 
-
-const char* readBinary(const char* path, uint32_t* p_size);
-
-void gaiaUniverseModelEngineSetup(ShEngine* p_engine);
-
-void gaiaUniverseModelSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const char* fragment_shader_path, GaiaUniverseModelMemory* p_universe_model);
-
-void gaiaUniverseModelReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_universe_model);
-
-void gaiaUniverseModelWriteVertexBuffers(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model);
-
-void gaiaUniverseModelSceneUpdate(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model);
-
-void gaiaUniverseModelSceneSetup(ShEngine* p_engine);
-
-void gaiaUniverseModelMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model);
-
-void gaiaUniverseModelEngineShutdown(ShEngine* p_engine);
-
-
-int main(void) {
-	//ENGINE SETUP
-	ShEngine engine = { 0 };
-	gaiaUniverseModelEngineSetup(&engine);
-
-	//SETUP MAIN MATERIAL
-	GaiaUniverseModelMemory universe_model = { 0 };
-	gaiaUniverseModelSetupMaterial(&engine, "../shaders/bin/celestialBody.vert.spv", "../shaders/bin/celestialBody.frag.spv", &universe_model);
-	
-
-	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
-	const uint32_t CELESTIAL_BODY_SIZE = gaiaGetBodySize(celestial_body_flags);
-
-	//GET AVAILABLE MEMORY
-	//READ SOURCE FILES
-	gaiaUniverseModelReadSources(&engine, celestial_body_flags, &universe_model);
-
-	//WRITE VERTEX BUFFER MEMORY
-	gaiaUniverseModelWriteVertexBuffers(&engine, &universe_model);
-
-	//CREATE SCENE
-	gaiaUniverseModelSceneSetup(&engine);
-	
-	while (shIsWindowActive(engine.window.window)) {
-		//UPDATE WINDOW
-		shUpdateWindow(&engine);
-
-		//BEGIN FRAME
-		shFrameReset(&engine.core);
-		uint32_t frame_index = 0;
-		shFrameBegin(&engine.core, &frame_index);
-
-		//UPDATE FRAME
-		gaiaUniverseModelSceneUpdate(&engine, &universe_model);
-		shDraw(&engine.core, universe_model.used_vram / CELESTIAL_BODY_SIZE);
-
-		//END FRAME
-		shEndPipeline(&engine.p_materials[0].pipeline);
-		shFrameEnd(&engine.core, frame_index);
-	}
-	
-	gaiaUniverseModelMemoryRelease(&engine, &universe_model);
-	gaiaUniverseModelEngineShutdown(&engine);
-    return 0;
-}
-
-void gaiaUniverseModelEngineSetup(ShEngine* p_engine) {
+void gaiaEngineSetup(ShEngine* p_engine) {
 	assert(p_engine != NULL);
 	shWindowSetup("Gaia EDR3 Universe Model", 1900, 1000, &p_engine->window);
 	shCreateInstance(&p_engine->core, "Gaia EDR3 Universe Model", "SH-Engine", 1, p_engine->window.instance_extension_count, p_engine->window.pp_instance_extensions);
@@ -135,7 +60,7 @@ const char* readBinary(const char* path, uint32_t* p_size) {
 	return code;
 }
 
-void gaiaUniverseModelSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const char* fragment_shader_path, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const char* fragment_shader_path, GaiaUniverseModelMemory* p_universe_model) {
 	p_engine->p_materials = p_universe_model->materials;
 	float one = 1.0f;
 	memcpy(&((char*)p_universe_model->uniform_buffer)[12], &one, 4);
@@ -170,7 +95,7 @@ void gaiaUniverseModelSetupMaterial(ShEngine* p_engine, const char* vertex_shade
 	shSetupGraphicsPipeline(&p_engine->core, p_engine->p_materials[0].fixed_states, &p_engine->p_materials[0].pipeline);
 }
 
-void gaiaUniverseModelReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_universe_model) {
 	assert(p_universe_model != NULL);
 
 	uint32_t available_video_memory = 0;
@@ -191,7 +116,7 @@ void gaiaUniverseModelReadSources(ShEngine* p_engine, const GaiaCelestialBodyFla
 	gaiaFree(src);
 }
 
-void gaiaUniverseModelWriteVertexBuffers(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaWriteVertexBuffers(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
 	const uint32_t MAX_GPU_HEAP_SIZE = 67108864;
 	uint32_t written_memory = 0;
 	
@@ -208,7 +133,7 @@ void gaiaUniverseModelWriteVertexBuffers(ShEngine* p_engine, GaiaUniverseModelMe
 	}
 }
 
-void gaiaUniverseModelSceneSetup(ShEngine* p_engine) {
+void gaiaSceneSetup(ShEngine* p_engine) {
 	shCreateScene(&p_engine->scenes[0]);
 	const uint32_t camera_entity = shCreateEntity(&p_engine->scenes[0]);
 	ShCamera* p_camera = shAddShCamera(&p_engine->scenes[0], camera_entity);
@@ -221,7 +146,7 @@ void gaiaUniverseModelSceneSetup(ShEngine* p_engine) {
 	shSceneInit(p_engine, 0);
 }
 
-void gaiaUniverseModelSceneUpdate(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaSceneUpdate(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
 	ShCamera* p_camera = shGetShCamera(&p_engine->scenes[0], 0);
 	if (shIsKeyPressed(p_engine->window, SH_KEY_LEFT_SHIFT)) {
 		p_camera->speed = 5.0f;
@@ -247,14 +172,14 @@ void gaiaUniverseModelSceneUpdate(ShEngine* p_engine, GaiaUniverseModelMemory* p
 	}
 }
 
-void gaiaUniverseModelMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
 	free(p_universe_model->p_celestial_bodies);
 	for (uint32_t i = 0; i < p_universe_model->vertex_buffer_count; i++) {
 		shClearBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers[i], p_universe_model->vertex_buffers_memory[i]);
 	}
 }
 
-void gaiaUniverseModelEngineShutdown(ShEngine* p_engine) {
+void gaiaEngineShutdown(ShEngine* p_engine) {
 	shClearUniformBufferMemory(&p_engine->core, 0, &p_engine->p_materials[0].pipeline);
 	shDestroyPipeline(&p_engine->core, &p_engine->p_materials[0].pipeline);
 	shSceneRelease(p_engine, 0);
