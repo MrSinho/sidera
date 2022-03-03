@@ -1,6 +1,6 @@
-# Gaia Universe Model Library Walkthrough
+# Gaia Universe Model
 
-<button>[index](./index.md)</button>
+Documentation at https://mrsinho.github.io/docs/Gaia_Universe_Model/index.html
 
 Setup
 * [Clone and build](#clone-and-build)
