@@ -21,7 +21,7 @@ extern "C" {
 #include <ecs/shCamera.h>
 #include <ecs/shTransform.h>
 
-#include <gaia_archive_tools/gaiaArchiveTools.h>
+#include <gaia-archive-tools/gaiaArchiveTools.h>
 
 #include "gaia-universe-model/gaiaUniverseModel.h"
 
@@ -42,7 +42,7 @@ void gaiaEngineSetup(ShEngine* p_engine) {
 	shCreateGraphicsCommandBuffer(&p_engine->core);
 }
 
-const char* readBinary(const char* path, uint32_t* p_size) {
+const char* gaiaReadBinaryGeneric(const char* path, uint32_t* p_size) {
 	FILE* stream = fopen(path, "rb");
 	if (stream == NULL) {
 		return NULL;
@@ -69,8 +69,8 @@ void gaiaSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const
 
 	uint32_t vertex_shader_size = 0;
 	uint32_t fragment_shader_size = 0;
-	char* vertex_code = (char*)readBinary(vertex_shader_path, &vertex_shader_size);
-	char* fragment_code = (char*)readBinary(fragment_shader_path, &fragment_shader_size);
+	char* vertex_code = (char*)gaiaReadBinaryGeneric(vertex_shader_path, &vertex_shader_size);
+	char* fragment_code = (char*)gaiaReadBinaryGeneric(fragment_shader_path, &fragment_shader_size);
 	shCreateShaderModule(p_engine->core.device, vertex_shader_size, vertex_code, &p_engine->p_materials[0].pipeline);
 	shCreateShaderModule(p_engine->core.device, fragment_shader_size, fragment_code, &p_engine->p_materials[0].pipeline);
 	free(vertex_code);
