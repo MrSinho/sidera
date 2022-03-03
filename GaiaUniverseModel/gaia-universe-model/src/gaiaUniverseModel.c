@@ -60,7 +60,7 @@ const char* gaiaReadBinaryGeneric(const char* path, uint32_t* p_size) {
 	return code;
 }
 
-void gaiaSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const char* fragment_shader_path, GaiaUniverseModelMemory* p_universe_model) {
+void gaiaSetupMaterial(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
 	p_engine->p_materials = p_universe_model->materials;
 	float one = 1.0f;
 	memcpy(&((char*)p_universe_model->uniform_buffer)[12], &one, 4);
@@ -69,8 +69,8 @@ void gaiaSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const
 
 	uint32_t vertex_shader_size = 0;
 	uint32_t fragment_shader_size = 0;
-	char* vertex_code = (char*)gaiaReadBinaryGeneric(vertex_shader_path, &vertex_shader_size);
-	char* fragment_code = (char*)gaiaReadBinaryGeneric(fragment_shader_path, &fragment_shader_size);
+	char* vertex_code = (char*)gaiaReadBinaryGeneric("../shaders/bin/celestialBody.vert.spv", &vertex_shader_size);
+	char* fragment_code = (char*)gaiaReadBinaryGeneric("../shaders/bin/celestialBody.frag.spv", &fragment_shader_size);
 	shCreateShaderModule(p_engine->core.device, vertex_shader_size, vertex_code, &p_engine->p_materials[0].pipeline);
 	shCreateShaderModule(p_engine->core.device, fragment_shader_size, fragment_code, &p_engine->p_materials[0].pipeline);
 	free(vertex_code);

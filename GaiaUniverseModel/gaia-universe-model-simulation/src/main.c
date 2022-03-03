@@ -12,7 +12,7 @@ int main(void) {
 
 	//SETUP MAIN MATERIAL
 	GaiaUniverseModelMemory universe_model = { 0 };
-	gaiaSetupMaterial(&engine, "../shaders/bin/celestialBody.vert.spv", "../shaders/bin/celestialBody.frag.spv", &universe_model);
+	gaiaSetupMaterial(&engine, &universe_model);
 	assert(engine.p_materials != NULL);
 
 	uint64_t celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;

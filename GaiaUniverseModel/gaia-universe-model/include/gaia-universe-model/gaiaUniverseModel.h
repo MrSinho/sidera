@@ -24,7 +24,7 @@ extern void gaiaEngineSetup(ShEngine* p_engine);
 
 extern const char* gaiaReadBinaryGeneric(const char* path, uint32_t* p_size);
 
-extern void gaiaSetupMaterial(ShEngine* p_engine, const char* vertex_shader_path, const char* fragment_shader_path, GaiaUniverseModelMemory* p_universe_model);
+extern void gaiaSetupMaterial(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model);
 
 extern void gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_universe_model);
 
