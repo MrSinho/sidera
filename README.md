@@ -1,4 +1,6 @@
-# Gaia Archive Tools Library Walkthrough
+# Gaia Universe Model Library Walkthrough
+
+<button>[index](./index.md)</button>
 
 Setup
 * [Clone and build](#clone-and-build)
@@ -38,14 +40,13 @@ Inside the cloned repository directory download the GEDR3 binaries by executing 
 
 ## Use CMake
 
-| CMake target                                           | type       |   |
-|--------------------------------------------------------|------------|---|
-| [shvulkan](../ShVulkan/index.md)                       | library    |   |
-| [shengine](../ShEngine/index.md)                       | library    |   |
-| [gaia-archive-tools](../Gaia_Archive_Tools/index.md)   | library    |   |
-| [gaia-universe-model](../Gaia_Universe_Model/index.md) | library    |   |
-| gaia-universe-model-simulation                         | executable |   |
-|                                                        |            |   |
+| CMake target                                           | type       |
+|--------------------------------------------------------|------------|
+| [shvulkan](../ShVulkan/index.md)                       | library    |
+| [shengine](../ShEngine/index.md)                       | library    |
+| [gaia-archive-tools](../Gaia_Archive_Tools/index.md)   | library    |
+| [gaia-universe-model](../Gaia_Universe_Model/index.md) | library    |
+| gaia-universe-model-simulation                         | executable |
 
 `gaia-universe-model-simulation` is a real time simulation, thus it needs all the libraries written on the table above.
 
