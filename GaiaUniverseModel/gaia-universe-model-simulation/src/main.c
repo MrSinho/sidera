@@ -37,7 +37,7 @@ int main(void) {
 		uint32_t frame_index = 0;
 		shFrameBegin(&engine.core, &frame_index);
 
-		//UPDATE FRAME
+		//UPDATE SCENE AND START DRAWING
 		gaiaSceneUpdate(&engine, &universe_model);
 		shDraw(&engine.core, universe_model.used_vram / CELESTIAL_BODY_SIZE);
 
