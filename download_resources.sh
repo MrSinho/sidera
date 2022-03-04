@@ -1,3 +1,1 @@
-./externals/Gaia_Archive_Tools/
-
-pause
+./externals/Gaia_Archive_Tools/download_resources.sh
