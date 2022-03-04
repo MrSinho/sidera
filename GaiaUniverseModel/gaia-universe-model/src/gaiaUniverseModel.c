@@ -104,7 +104,7 @@ void gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_
 	p_universe_model->p_celestial_bodies = calloc(1, available_video_memory);
 	assert(p_universe_model->p_celestial_bodies != NULL);
 	void* src;
-	for (uint32_t i = 0; i < 2; i++) {
+	for (uint32_t i = 0; i < 25; i++) {
 		uint32_t bytes_read = 0;
 		gaiaReadBinaryFileFromID("../gaia_resources/", i, celestial_body_flags, 0, 0, &bytes_read, &src);
 		if (p_universe_model->used_vram + bytes_read >= available_video_memory) {
