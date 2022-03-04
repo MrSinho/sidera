@@ -1,6 +1,6 @@
 # Gaia Universe Model
 
-![](screenshots/gaia-universe-model.jpeg)
+![](screenshots/gaia-universe-model.png)
 
 Documentation at https://mrsinho.github.io/docs/Gaia_Universe_Model/index.html
 
