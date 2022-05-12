@@ -4,6 +4,10 @@
 
 Documentation at https://mrsinho.github.io/docs/Gaia_Universe_Model/index.html
 
+# To do:
+* batch rendering, subdivide space in regions
+* more advanced shaders for rendering stars
+
 Setup
 * [Clone and build](#clone-and-build)
 * [Download Universe Model Data](#download-universe-model-data)
