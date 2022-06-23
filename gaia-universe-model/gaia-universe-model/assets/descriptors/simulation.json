@@ -1,0 +1,7 @@
+{
+    "name": "gaia-universe-model",
+    "run": 1,
+    "start": "gaia_start",
+    "update": "gaia_update",
+    "close": "gaia_close"
+}

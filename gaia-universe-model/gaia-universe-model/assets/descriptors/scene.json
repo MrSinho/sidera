@@ -1,0 +1,21 @@
+{
+    "entities": [
+        {
+            "camera": {
+                
+            },
+            "transform": {
+
+            }
+        },
+        {
+            "COMMENT": "UNIVERSE MODEL ENTITY",
+            "transform": {
+
+            },
+            "material": {
+                "index": 0
+            }
+        }
+    ]
+}

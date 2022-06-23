@@ -56,3 +56,6 @@ build/*
 .vs/*
 bin/*
 gaia_resources/*
+*.bin
+*.csv
+*.csv.bin
