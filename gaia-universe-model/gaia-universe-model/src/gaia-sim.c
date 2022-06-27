@@ -33,7 +33,9 @@ void SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 	);
 	p_universe_model->celestial_body_size = gaiaGetBodySize(flags);
 
-	gaiaWriteVertexBuffers(p_engine, p_universe_model);
+	gaiaBuildPipeline(p_engine, p_universe_model);
+
+	gaiaWriteMemory(p_engine, p_universe_model);
 }
 
 void SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
@@ -55,13 +57,13 @@ void SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 
 	shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);
 
-	shPipelineWriteDescriptorBufferMemory(p_engine->core.device, 0, p_camera_transform->position, &p_material->pipeline);
-	shPipelineBindDescriptorSet(cmd_buffer, 0, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+	{//CAMERA
+		shPipelineWriteDescriptorBufferMemory(p_engine->core.device, 1, p_camera_transform->position, &p_material->pipeline);
+	}//CAMERA
 
-	shBindVertexBuffers(cmd_buffer, 0, p_universe_model->vertex_buffer_count, p_universe_model->vertex_buffers);
+	shPipelineBindDescriptorSets(cmd_buffer, 0, p_material->pipeline.descriptor_count, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 
 	shEndPipeline(&p_material->pipeline);
-
 	
 	shDraw(cmd_buffer, p_universe_model->used_gpu_heap / p_universe_model->celestial_body_size);
 
@@ -70,9 +72,9 @@ void SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 void SH_ENGINE_EXPORT_FUNCTION gaia_close(ShEngine* p_engine) {
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
 
-	for (uint32_t i = 0; i < p_universe_model->vertex_buffer_count; i++) {
-		shClearBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers[i], p_universe_model->vertex_buffers_memory[i]);
-	}
+	//for (uint32_t i = 0; i < p_universe_model->vertex_buffer_count; i++) {
+	//	shClearBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers[i], p_universe_model->vertex_buffers_memory[i]);
+	//}
 
 	if (p_universe_model != NULL) {
 		free(p_engine->p_engine_extension);

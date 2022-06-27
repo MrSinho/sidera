@@ -1,39 +1,46 @@
 #version 450
 
-layout (location = 0) in float asc;
-layout (location = 1) in float dec;
-layout (location = 2) in float baricentric_distance;
-layout (location = 3) in float teff;
-
-layout (location = 0) out vec4  bodyPosition;
-layout (location = 1) out float bodyTeff;
-layout (location = 2) out float bodyRadius;
+layout (location = 0) out vec4  body_position;
+layout (location = 1) out vec4  fragment_position;
+layout (location = 2) out float body_teff;
+layout (location = 3) out float body_radius;
 
 layout (push_constant) uniform pushConstant {
     mat4 projection;
     mat4 view;
 } pconst;
 
-#define TRIANGLE_VERTEX_COUNT 12
-vec4 triangle[3] = vec4[3](
-    vec4(-1.0f, 0.0f, 0.0f, 1.0f),
-    vec4( 0.0f,-1.0f, 0.0f, 1.0f),
-    vec4( 1.0f,-1.0f, 0.0f, 1.0f)
-);
+layout (set = 0, binding = 0) buffer celestialBodies {
+    vec4 asc_dec_distance_teff[];
+} bodies;
 
-#define DISTANCE_SCALE 0.01
+vec3 triangle[3] = vec3[3](
+    vec3(-1.0f, 1.0f, 0.0f),
+	vec3( 0.0f,-1.0f, 0.0f),
+	vec3( 1.0f, 1.0f, 0.0f)
+);
 
 void main() {
 
-    gl_PointSize = 1.0f;
-    bodyTeff = teff;
+    uint body_index = gl_VertexIndex / 3;
 
-    float dist = baricentric_distance * DISTANCE_SCALE;
-    bodyPosition = vec4(
+    float asc = bodies.asc_dec_distance_teff[body_index].x;
+    float dec = bodies.asc_dec_distance_teff[body_index].y;
+    float dist = bodies.asc_dec_distance_teff[body_index].z;
+    float teff = bodies.asc_dec_distance_teff[body_index].w;
+    body_teff = teff;
+
+    body_position = vec4(
         dist * sin(dec) * cos(asc), 
         dist * sin(dec) * sin(asc), 
         dist * cos(dec), 
         1.0
     );
-    gl_Position = pconst.projection * pconst.view * bodyPosition;
+
+
+    vec4 vertex_position = vec4(triangle[gl_VertexIndex % 3] * 2.0f + body_position.xyz, 1.0f);
+
+    fragment_position = vertex_position;
+
+    gl_Position = pconst.projection * pconst.view * vertex_position;
 }

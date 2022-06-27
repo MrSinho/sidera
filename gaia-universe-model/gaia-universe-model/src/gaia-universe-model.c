@@ -6,22 +6,48 @@ extern "C" {
 
 #include <shengine/shEngine.h>
 
-
-
 #include <gaia-universe-model/gaiaUniverseModel.h>
+#include <shfd/shFile.h>
 
-
-
-uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_universe_model) {
+uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_model) {
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
-	gaiaError(p_universe_model == NULL, "invalid universe model memory", return 0);
+	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
 
-	uint32_t available_video_memory = 0;
-	shGetMemoryBudgetProperties(p_engine->core.physical_device, &available_video_memory, NULL, NULL);
-	available_video_memory /= 20;
-	p_universe_model->p_celestial_bodies = calloc(1, available_video_memory);
-	gaiaError(p_universe_model->p_celestial_bodies == NULL, "invalid celestial bodies memory", return 0);
+	uint32_t host_visible_available_video_memory = 0;
+	{
+		uint32_t host_memory_type_index = 0;
+		shGetMemoryType(
+			p_engine->core.device,
+			p_engine->core.physical_device,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			&host_memory_type_index
+		);
+		VkPhysicalDeviceMemoryBudgetPropertiesEXT heap_budget = { 0 };
+		shGetMemoryBudgetProperties(p_engine->core.physical_device, NULL, NULL, &heap_budget);
+		host_visible_available_video_memory = (uint32_t)heap_budget.heapBudget[host_memory_type_index];
+	}
 	
+	uint32_t device_available_video_memory = 0;
+	{
+		uint32_t device_memory_type_index = 0;
+		shGetMemoryType(
+			p_engine->core.device,
+			p_engine->core.physical_device,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			&device_memory_type_index
+		);
+		VkPhysicalDeviceMemoryBudgetPropertiesEXT heap_budget = { 0 };
+		shGetMemoryBudgetProperties(p_engine->core.physical_device, NULL, NULL, &heap_budget);
+		device_available_video_memory = (uint32_t)heap_budget.heapBudget[device_memory_type_index];
+	}
+	
+	uint32_t available_gpu_heap = host_visible_available_video_memory <= device_available_video_memory ? host_visible_available_video_memory : device_available_video_memory;
+	available_gpu_heap /= 2;
+
+
+	p_model->p_celestial_bodies = calloc(1, available_gpu_heap);
+	gaiaError(p_model->p_celestial_bodies == NULL, "invalid celestial bodies memory", return 0);
+
 	for (uint32_t i = 0; i < 25; i++) {
 		for (uint8_t half = 0; half < 2; half++) {
 			uint32_t bytes_read = 0;
@@ -31,42 +57,116 @@ uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celesti
 				"failed reading source file",
 				return 0;
 			);
-			if (p_universe_model->used_gpu_heap + bytes_read >= available_video_memory) {
+			if (p_model->used_gpu_heap + bytes_read >= available_gpu_heap) {
+				gaiaFree(p_src);
 				break;
 			}
-			memcpy(&((char*)p_universe_model->p_celestial_bodies)[p_universe_model->used_gpu_heap], p_src, bytes_read);
-			p_universe_model->used_gpu_heap += bytes_read;
+			memcpy(&((char*)p_model->p_celestial_bodies)[p_model->used_gpu_heap], p_src, bytes_read);
 			gaiaFree(p_src);
+			p_model->used_gpu_heap += bytes_read;
 		}
-		
 	}
+
+
 
 	return 1;
 }
 
-uint8_t gaiaWriteVertexBuffers(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
+uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
-	gaiaError(p_universe_model == NULL, "invalid universe model memory", return 0);
+	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
 
-	const uint32_t MAX_GPU_HEAP_SIZE = 67108864;
-	uint32_t written_memory = 0;
-
-	p_universe_model->vertex_buffer_count = (p_universe_model->used_gpu_heap > MAX_GPU_HEAP_SIZE) ? (p_universe_model->used_gpu_heap / MAX_GPU_HEAP_SIZE) : 1;
-	for (uint32_t i = 0; i < p_universe_model->vertex_buffer_count; i++) {
-		uint32_t buffer_size = p_universe_model->used_gpu_heap > MAX_GPU_HEAP_SIZE ? MAX_GPU_HEAP_SIZE : p_universe_model->used_gpu_heap;
-
-		shCreateVertexBuffer(p_engine->core.device, buffer_size, &p_universe_model->vertex_buffers[i]);
-
-		shAllocateVertexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_universe_model->vertex_buffers[i], &p_universe_model->vertex_buffers_memory[i]);
-
-		shWriteVertexBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers_memory[i], 0, buffer_size, &((char*)p_universe_model->p_celestial_bodies)[written_memory]);
+	p_model->p_pipeline = &p_engine->p_materials[0].pipeline;
+	p_model->p_fixed_states = &p_engine->p_materials[0].fixed_states;
+	VkDevice device = p_engine->core.device;
+	
+	//uint32_t max_descriptor_size = p_engine->core.physical_device_properties.limits.maxStorageBufferRange;
+	//uint32_t buffer_count = (p_model->used_gpu_heap / max_descriptor_size) + (1 && (p_model->used_gpu_heap % max_descriptor_size));
+	//p_model->bodies_descriptor_buffer_count = buffer_count;
 		
-		shBindVertexBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers[i], 0, p_universe_model->vertex_buffers_memory[i]);
+	{//PUSH CONSTANT
+		shSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, 128, &p_model->p_pipeline->push_constant_range);
+	}//PUSH CONSTANT
 
-		written_memory += buffer_size;
-		if (written_memory >= p_universe_model->used_gpu_heap) { break; }
+	{//DESCRIPTOR SET AND BUFFER
+		shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, 0, p_model->used_gpu_heap, p_model->p_pipeline);
+		shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, p_model->p_pipeline);
+		shPipelineBindDescriptorBufferMemory(device, 0, 0, p_model->p_pipeline);
+
+		shPipelineDescriptorSetLayout(device, 0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, p_model->p_pipeline);
+		shPipelineCreateDescriptorPool(device, 0, p_model->p_pipeline);
+		shPipelineAllocateDescriptorSet(device, 0, p_model->p_pipeline);
+
+
+		shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 1, 16, p_model->p_pipeline);
+		shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1, p_model->p_pipeline);
+		shPipelineBindDescriptorBufferMemory(device, 1, 0, p_model->p_pipeline);
+
+		shPipelineDescriptorSetLayout(device, 1, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, p_model->p_pipeline);
+		shPipelineCreateDescriptorPool(device, 1, p_model->p_pipeline);
+		shPipelineAllocateDescriptorSet(device, 1, p_model->p_pipeline);
+	}//DESCRIPTOR SET AND BUFFER
+	
+
+	{//FIXED STATES
+		shSetFixedStates(device, p_engine->core.surface.width, p_engine->core.surface.height, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_POLYGON_MODE_FILL, p_model->p_fixed_states);
+	}//FIXED STATES
+
+	{//SHADER STAGES
+		char path[256];
+		shMakeAssetsPath("/shaders/bin/celestialBody.vert.spv", path);
+		uint32_t src_size = 0;
+		char* src = (char*)shReadBinary(path, &src_size);
+		shPipelineCreateShaderModule(device, src_size, src, p_model->p_pipeline);
+		shPipelineCreateShaderStage(device, VK_SHADER_STAGE_VERTEX_BIT, p_model->p_pipeline);
+		free(src);
+		shMakeAssetsPath("/shaders/bin/celestialBody.frag.spv", path);
+		src = (char*)shReadBinary(path, &src_size);
+		shPipelineCreateShaderModule(device, src_size, src, p_model->p_pipeline);
+		shPipelineCreateShaderStage(device, VK_SHADER_STAGE_FRAGMENT_BIT, p_model->p_pipeline);
+		free(src);
+	}//SHADER STAGES
+
+	{//GRAPHICS PIPELINE
+		shSetupGraphicsPipeline(device, p_engine->core.render_pass, *p_model->p_fixed_states, p_model->p_pipeline);
+	}//GRAPHICS PIPELINE
+
+	return 1;
+}
+
+uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
+	
+	VkDevice device = p_engine->core.device;
+	VkPhysicalDevice physical_device = p_engine->core.physical_device;
+	VkCommandBuffer* p_cmd_buffer = &p_engine->core.p_graphics_commands[0].cmd_buffer;
+	VkFence* p_fence = &p_engine->core.p_graphics_commands[0].fence;
+
+	VkBuffer staging_buffer = NULL;
+	VkDeviceMemory staging_buffer_memory = NULL;
+	shCreateBuffer(device, p_model->used_gpu_heap, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, &staging_buffer);
+	shAllocateMemory(device, physical_device, staging_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &staging_buffer_memory);
+	shWriteMemory(device, staging_buffer_memory, 0, p_model->used_gpu_heap, p_model->p_celestial_bodies);
+	shBindMemory(device, staging_buffer, 0, staging_buffer_memory);
+
+	VkBuffer model_buffer = p_model->p_pipeline->descriptor_buffers[0];
+	VkDeviceMemory model_buffer_memory = p_model->p_pipeline->descriptor_buffers_memory[0];
+	
+	{
+		shResetFence(device, p_fence);
+		shWaitForFences(device, 1, p_fence);
+
+
+		shBeginCommandBuffer(*p_cmd_buffer);
+		shCopyBuffer(*p_cmd_buffer, staging_buffer, 0, 0, p_model->used_gpu_heap, model_buffer);
+		shEndCommandBuffer(*p_cmd_buffer);
+
+
+		shQueueSubmit(p_cmd_buffer, p_engine->core.graphics_queue.queue, *p_fence);
 	}
+	
+	shClearBufferMemory(device, staging_buffer, staging_buffer_memory);
 
+	free(p_model->p_celestial_bodies);
 	return 1;
 }
 
@@ -74,9 +174,6 @@ uint8_t gaiaMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_univers
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
 	gaiaError(p_universe_model == NULL, "invalid universe model memory", return 0);
 	free(p_universe_model->p_celestial_bodies);
-	for (uint32_t i = 0; i < p_universe_model->vertex_buffer_count; i++) {
-		shClearBufferMemory(p_engine->core.device, p_universe_model->vertex_buffers[i], p_universe_model->vertex_buffers_memory[i]);
-	}
 	return 1;
 }
 

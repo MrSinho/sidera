@@ -2,51 +2,26 @@
     "materials": [
         {
             "bind_on_loop": 0,
+            "build_pipeline": 0,
             "vertex_shader": "/shaders/bin/celestialBody.vert.spv",
             "fragment_shader": "/shaders/bin/celestialBody.frag.spv",
             "fixed_states": {
-                "flags": [
-                    "FIXED_STATES_POLYGON_MODE_POINTS",
-                    "FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST"
-                ],
-                "vertex_inputs": [
-                    {
-                        "COMMENT": "RASC",
-                        "location": 0,
-                        "offset": 0,
-                        "format": "VEC1_SIGNED_FLOAT",
-                        "size": 4
-                    },
-                    {
-                        "COMMENT": "RDEC",
-                        "location": 1,
-                        "offset": 4,
-                        "format": "VEC1_SIGNED_FLOAT",
-                        "size": 4
-                    },
-                    {
-                        "COMMENT": "BARICENTRIC DISTANCE",
-                        "location": 2,
-                        "offset": 8,
-                        "format": "VEC1_SIGNED_FLOAT",
-                        "size": 4
-                    },
-                    {
-                        "COMMENT": "TEMPERATURE",
-                        "location": 3,
-                        "offset": 12,
-                        "format": "VEC1_SIGNED_FLOAT",
-                        "size": 4
-                    }
-                ]
+                "polygon_mode": "FILL",
+                "primitive_topology": "TRIANGLE_LIST"
             },
             "push_constants_size": 128,
             "push_constants_stage": "SHADER_STAGE_VERTEX", 
-            "uniform_buffers": [
+            "descriptors": [
                 {
                     "set": 0,
                     "size": 16,
-                    "dynamic": 0,
+                    "type": "STORAGE",
+                    "stage": "SHADER_STAGE_VERTEX"
+                },
+                {
+                    "set": 1,
+                    "size": 16,
+                    "type": "UNIFORM",
                     "stage": "SHADER_STAGE_FRAGMENT"
                 }
             ]
