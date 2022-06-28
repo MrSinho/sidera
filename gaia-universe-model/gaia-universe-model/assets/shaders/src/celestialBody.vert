@@ -37,10 +37,29 @@ void main() {
         1.0
     );
 
+    mat4 view  = pconst.view;
+    
+    view[0][0] = 1.0; 
+    view[0][1] = 0.0; 
+    view[0][2] = 0.0; 
+    view[1][0] = 0.0; 
+    view[1][1] = 1.0; 
+    view[1][2] = 0.0; 
+    view[2][0] = 0.0; 
+    view[2][1] = 0.0; 
+    view[2][2] = 1.0;
 
-    vec4 vertex_position = vec4(triangle[gl_VertexIndex % 3] * 2.0f + body_position.xyz, 1.0f);
+    //vec4 vertex_position = vec4(triangle[gl_VertexIndex % 3] * 2.0f + body_position.xyz, 1.0f);
+    vec4 mesh_vertex_position = vec4(triangle[gl_VertexIndex % 3] * 2.0f, 1.0f);
+    //vertex_position = view * vertex_position;
+    //fragment_position = vertex_position;
+//
+    //gl_Position = pconst.projection * vertex_position;
 
-    fragment_position = vertex_position;
+    vec4 view_pos = pconst.view * vec4(body_position.xyz, 1.0f);
+    vec4 vertex_position = pconst.projection * (view_pos + vec4(mesh_vertex_position.xy,0,0));
+    gl_Position = vertex_position;
+    fragment_position = vec4(triangle[gl_VertexIndex % 3] * 2.0f + body_position.xyz, 1.0f);
+    
 
-    gl_Position = pconst.projection * pconst.view * vertex_position;
 }

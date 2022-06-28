@@ -165,9 +165,12 @@ void main() {
         }
     }
     
+
     fragColor = saturateColor(4.0) *
                 starColor(temperature_color, 0.9f) /
                 //teff / 
-                45.0f;
+                25.0f;
                 //pow(distance(vec4(ubo.camera_position.xyz, 1.0f), fragment_position), 2) * 10.0f;
+    
+    //fragColor = vec4(1.0f);
 }
