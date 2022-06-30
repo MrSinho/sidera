@@ -1,1 +1,1 @@
-python ../external/gaia-archive-tools/scripts/download-resources.py 0 25
+python ../external/gaia-archive-tools/scripts/download-resources.py 0 75
