@@ -3,15 +3,17 @@
 ![](saved/screenshot_0.png)
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
+
+- [Setup](#setup)
+	* [Clone and build](#clone-and-build)
+	* [Generate CMake targets](#generate-cmake-targets)
+	* [Build](#build)
+	* [Setup GEDR3 Universe Model data](#build)
+
+- [Testing](#testing)
+
 ![](saved/screenshot_5.png)
 
-Setup
-* [Clone and build](#clone-and-build)
-* [Download Universe Model Data](#download-universe-model-data)
-
-Tutorial
-* [Use CMake](#use-cmake)
-* [Example](#example)
 
 ---
 
