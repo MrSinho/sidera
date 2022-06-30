@@ -69,6 +69,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 	shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 	
 	{
+		if (shIsKeyPressed(p_engine->window, SH_KEY_0)) {
+			p_camera->speed = 0.1f;
+		}
 		if (shIsKeyPressed(p_engine->window, SH_KEY_1)) {
 			p_camera->speed = 1.0f;
 		}
