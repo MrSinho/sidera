@@ -29,22 +29,23 @@ typedef struct GaiaModelDescriptorInfo {
 
 
 
-#define gaiaSimulationError(p_engine, condition, failure_expression)\
+#define gaiaSimulationError(condition, failure_expression)\
 	if ((int)(condition)) {\
 		return 0;\
 	}\
 
 
 
-uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_descriptor_info);
+extern uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_descriptor_info);
 
-uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, const GaiaModelDescriptorInfo descriptor_info, GaiaUniverseModelMemory* p_model);
+extern uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, const GaiaModelDescriptorInfo descriptor_info, GaiaUniverseModelMemory* p_model);
 
-uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model);
+extern uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model);
 
-uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model);
+extern uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model);
 
-uint8_t gaiaMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_model);
+#define gaiaMemoryRelease(p_universe_model)\
+	free((p_universe_model)->p_celestial_bodies)\
 
 
 
