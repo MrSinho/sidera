@@ -206,13 +206,6 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	return 1;
 }
 
-uint8_t gaiaMemoryRelease(ShEngine* p_engine, GaiaUniverseModelMemory* p_universe_model) {
-	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
-	gaiaError(p_universe_model == NULL, "invalid universe model memory", return 0);
-	free(p_universe_model->p_celestial_bodies);
-	return 1;
-}
-
 
 
 #ifdef __cplusplus

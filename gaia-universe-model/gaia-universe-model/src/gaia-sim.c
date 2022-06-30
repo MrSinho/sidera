@@ -33,25 +33,21 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 	
 	
 	gaiaSimulationError(
-		p_engine,
 		gaiaReadModelDescriptor(descriptor_path, &descriptor_info) == 0,
 		return 0;
 	);
 
 	gaiaSimulationError(
-		p_engine,
 		gaiaReadSources(p_engine, GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF, descriptor_info, p_universe_model) == 0,
 		return 0;
 	);
 
 	gaiaSimulationError(
-		p_engine,
 		gaiaBuildPipeline(p_engine, p_universe_model) == 0,
 		return 0;
 	);
 
 	gaiaSimulationError(
-		p_engine,
 		gaiaWriteMemory(p_engine, p_universe_model) == 0,
 		return 0;
 	);
