@@ -9,9 +9,43 @@ extern "C" {
 #include <gaia-universe-model/gaiaUniverseModel.h>
 #include <shfd/shFile.h>
 
-uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, GaiaUniverseModelMemory* p_model) {
+#include <json.h>
+
+
+
+uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_descriptor_info) {
+	gaiaError(path == NULL, "invalid universe model descriptor info path", return 0);
+	gaiaError(p_descriptor_info == NULL, "invalid universe model descriptor info memory", return 0);
+	
+	char* p_src = (char*)shReadText(path, NULL);
+	gaiaError(p_src == NULL, "universe model descriptor not found", return 0);
+
+	json_object* parser = json_tokener_parse(p_src);
+	gaiaError(parser == NULL, "invalid compounds json format", return 0);
+	free(p_src);
+
+	json_object* json_source_range = json_object_object_get(parser, "source_range");
+	gaiaError(json_source_range == NULL, "missing universe model source range", return 0);
+
+	uint32_t range_items = (uint32_t)json_object_array_length(json_source_range);
+	gaiaError(range_items < 2, "missing universe model source range data", return 0);
+	
+	json_object* json_range_start	= json_object_array_get_idx(json_source_range, 0);
+	json_object* json_range_end		= json_object_array_get_idx(json_source_range, 1);
+
+	p_descriptor_info->source_start = json_object_get_int(json_range_start);
+	p_descriptor_info->source_end	= json_object_get_int(json_range_end);
+
+	free(parser);
+
+	return 1;
+}
+
+uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, const GaiaModelDescriptorInfo descriptor_info, GaiaUniverseModelMemory* p_model) {
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
 	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
+
+	p_model->celestial_body_size = gaiaGetBodySize(celestial_body_flags);
 
 	uint32_t host_visible_available_video_memory = 0;
 	{
@@ -48,7 +82,10 @@ uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celesti
 	p_model->p_celestial_bodies = calloc(1, available_gpu_heap);
 	gaiaError(p_model->p_celestial_bodies == NULL, "invalid celestial bodies memory", return 0);
 
-	for (uint32_t i = 0; i < 25; i++) {
+	printf("Available VRAM: %i\n", available_gpu_heap);
+	puts("Loading universe model files...");
+
+	for (uint32_t i = descriptor_info.source_start; i < descriptor_info.source_end; i++) {
 		for (uint8_t half = 0; half < 2; half++) {
 			uint32_t bytes_read = 0;
 			void* p_src = NULL;
@@ -67,8 +104,6 @@ uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celesti
 		}
 	}
 
-
-
 	return 1;
 }
 
@@ -80,9 +115,7 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 	p_model->p_fixed_states = &p_engine->p_materials[0].fixed_states;
 	VkDevice device = p_engine->core.device;
 	
-	//uint32_t max_descriptor_size = p_engine->core.physical_device_properties.limits.maxStorageBufferRange;
-	//uint32_t buffer_count = (p_model->used_gpu_heap / max_descriptor_size) + (1 && (p_model->used_gpu_heap % max_descriptor_size));
-	//p_model->bodies_descriptor_buffer_count = buffer_count;
+	puts("Buildings celestial body pipeline");
 		
 	{//PUSH CONSTANT
 		shSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, 128, &p_model->p_pipeline->push_constant_range);
@@ -136,6 +169,8 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 
 uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	
+	puts("Writing memory");
+
 	VkDevice device = p_engine->core.device;
 	VkPhysicalDevice physical_device = p_engine->core.physical_device;
 	VkCommandBuffer* p_cmd_buffer = &p_engine->core.p_graphics_commands[0].cmd_buffer;
@@ -151,17 +186,18 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	VkBuffer model_buffer = p_model->p_pipeline->descriptor_buffers[0];
 	VkDeviceMemory model_buffer_memory = p_model->p_pipeline->descriptor_buffers_memory[0];
 	
+	puts("Copying memory");
+
 	{
 		shResetFence(device, p_fence);
-		shWaitForFences(device, 1, p_fence);
-
 
 		shBeginCommandBuffer(*p_cmd_buffer);
 		shCopyBuffer(*p_cmd_buffer, staging_buffer, 0, 0, p_model->used_gpu_heap, model_buffer);
 		shEndCommandBuffer(*p_cmd_buffer);
 
-
 		shQueueSubmit(p_cmd_buffer, p_engine->core.graphics_queue.queue, *p_fence);
+
+		shWaitForFences(device, 1, p_fence);
 	}
 	
 	shClearBufferMemory(device, staging_buffer, staging_buffer_memory);
