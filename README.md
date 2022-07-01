@@ -1,6 +1,6 @@
 # gaia-universe-model
 
-![](saved/screenshot_0.png)
+![](saved/screenshot_0.jpg)
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
@@ -12,14 +12,14 @@
 
 - [Testing](#testing)
 
-![](saved/screenshot_5.png)
+![](saved/screenshot_5.jpg)
 
 
 ---
 
 # Setup
 
-![](saved/screenshot_4.png)
+![](saved/screenshot_4.jpg)
 
 
 ## Clone and Build
@@ -46,7 +46,7 @@ cmake --build .
 
 ## Setup GEDR3 Universe Model data
 
-![](saved/screenshot_1.png)
+![](saved/screenshot_1.jpg)
 
 Before downloading the GEDR3 Universe Model data assume that you want to visualize up to 25 files out of 5000 (not all the files are available, check [gaia-resources](https://github.com/mrsinho/gaia-resources)):
 
@@ -65,7 +65,7 @@ Now navigate to [gaia-universe-model/gaia-universe-model/assets/descriptors/univ
 
 # Testing
 
-![](saved/screenshot_3.png)
+![](saved/screenshot_3.jpg)
 
 Go to `external/shengine/bin` and run the executable named `sheditor`.
 To move use the `WASD` keys and set the camera speed with `012345`.
