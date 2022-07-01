@@ -13,10 +13,6 @@ extern "C" {
 
 #include <gaia-universe-model/gaiaUniverseModel.h>
 
-#include <math.h>
-
-#define GAIA_UNIVERSE_ENTITY 1
-
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
