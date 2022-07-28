@@ -20,6 +20,10 @@
 
 ![](saved/screenshot_1.jpg)
 
+## To do:
+- [] Update from GEDR3 to GDR3
+- [] Gui for settings and star info
+- [] Better star shader
 
 ## Clone and Build
 
