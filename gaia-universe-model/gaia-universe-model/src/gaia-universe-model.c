@@ -195,7 +195,7 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 		shCopyBuffer(*p_cmd_buffer, staging_buffer, 0, 0, p_model->used_gpu_heap, model_buffer);
 		shEndCommandBuffer(*p_cmd_buffer);
 
-		shQueueSubmit(p_cmd_buffer, p_engine->core.graphics_queue.queue, *p_fence);
+		shQueueSubmit(1, p_cmd_buffer, p_engine->core.graphics_queue.queue, *p_fence);
 
 		shWaitForFences(device, 1, p_fence);
 	}

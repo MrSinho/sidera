@@ -16,6 +16,13 @@
 ---
 
 
+# Roadmap
+
+* Load data from cloud
+* Reorder position based on distance from camera before rendering
+* Navigate to a specific region from menu
+* Lancher
+
 # Setup
 
 ![](saved/screenshot_1.jpg)

@@ -2,10 +2,11 @@
     "entities": [
         {
             "camera": {
-                "speed": 50
+                "fov": 45,
+                "speed": 50,
+                "mouse_speed": 3
             },
             "transform": {
-
             }
         },
         {

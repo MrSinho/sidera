@@ -19,6 +19,8 @@ typedef struct GaiaUniverseModelMemory {
 	uint32_t			available_video_memory;
 	ShVkPipeline*		p_pipeline;
 	ShVkFixedStates*	p_fixed_states;
+	uint8_t				display_gui;
+	uint8_t				display_menu;
 } GaiaUniverseModelMemory;
 
 

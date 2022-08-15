@@ -3,5 +3,6 @@
     "run": 1,
     "start": "gaia_start",
     "update": "gaia_update",
+    "frame_update": "gaia_frame_update",
     "close": "gaia_close"
 }
