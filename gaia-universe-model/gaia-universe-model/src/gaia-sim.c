@@ -8,21 +8,24 @@ extern "C" {
 #include <shengine/shExport.h>
 #include <shecs/shComponents.h>
 #include <shlinear-algebra/shEuler.h>
+#include <shegui/shEgui.h>
 
 #include <shgui/shgui.h>
-
 
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkDrawLoop.h>
 
-
+#include <cglm/cglm.h>
 
 #include <gaia-universe-model/gaiaUniverseModel.h>
 
-
+#define CENTER_GUI_TEXT_POS_X(text, pos)\
+	-(float)strlen(text) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 8.0f + (float)(pos)
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
+
+	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
 
 	p_engine->p_engine_extension = calloc(1, sizeof(GaiaUniverseModelMemory));
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
@@ -55,6 +58,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 		return 0;
 	);
 
+	p_universe_model->display_interface = 1;
+
 	return 1;
 }
 
@@ -73,94 +78,223 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		) {
 		p_universe_model->display_menu = 1 * p_universe_model->display_menu == 0;
 	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_R)) {
+		p_universe_model->display_quick_menu = 1 * p_universe_model->display_quick_menu == 0;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_G)) {
+		p_universe_model->display_quick_menu = 1 * p_universe_model->display_quick_menu == 0;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_H)) {
+		p_universe_model->display_interface = 1 * p_universe_model->display_interface == 0;
+	}
 
 	if (p_universe_model->display_menu) {
-		shGuiWindow(p_gui, 300.0f, 200.0f, 0.0f, 0.0f, "Settings", SH_GUI_PIXELS | SH_GUI_RESIZABLE);
+		p_universe_model->display_quick_menu = 0;
+
+		shGuiWindow(p_gui, 30.0f, 30.0f, 0.0f, 0.0f, "Menu", SH_GUI_MOVABLE | SH_GUI_RELATIVE);
 		shGuiWindowSeparator(p_gui);
-		shGuiWindowText(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Model size", 0);
 		shGuiWindowSeparator(p_gui);
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Low (10.000.000 stars)", SH_GUI_CENTER_WIDTH)) {
-			puts("Reloading universe model");//0-10
-			return 0;
+
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset position", SH_GUI_CENTER_WIDTH)) {
+			p_camera_transform->position[0] = 0.0f;
+			p_camera_transform->position[1] = 0.0f;
+			p_camera_transform->position[2] = 0.0f;
+			p_universe_model->display_menu = 0;
 		}
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Medium (50.000.000 stars)", SH_GUI_CENTER_WIDTH)) {
-			puts("Reloading universe model");//0-50
-			return 0;
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset orientation", SH_GUI_CENTER_WIDTH)) {
+			p_camera_transform->rotation[0] = 0.0f;
+			p_camera_transform->rotation[1] = 0.0f;
+			p_camera_transform->rotation[2] = 0.0f;
+			p_universe_model->display_menu = 0;
 		}
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "High (150.000.000 stars)", SH_GUI_CENTER_WIDTH)) {
-			puts("Reloading universe model");//0-150
-			return 0;
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE , "Reset zoom", SH_GUI_CENTER_WIDTH)) {
+			p_camera->fov = 45.0f;
+			p_universe_model->display_menu = 0;
 		}
 	}
-	else {
-		shGuiText(p_gui, SH_GUI_WINDOW_TEXT_SIZE, SH_GUI_CHAR_DISTANCE_OFFSET - (float)p_engine->window.width / 2.0f, (float)p_engine->window.height / 2.0f - SH_GUI_WINDOW_TEXT_SIZE, "Position UA:");
-		shGuiText(p_gui, SH_GUI_WINDOW_TEXT_SIZE, SH_GUI_CHAR_DISTANCE_OFFSET - (float)p_engine->window.width / 2.0f,-(float)p_engine->window.height / 2.0f + SH_GUI_WINDOW_TEXT_SIZE / 2.0f, "RA DEC:");
+	else if (p_universe_model->display_quick_menu) {
+		p_universe_model->display_menu = 0;
+		shGuiWindow(
+			p_gui,
+			30.0f,
+			30.0f,
+			0.0f,
+			0.0f,
+			"Go to",
+			SH_GUI_RELATIVE
+		);
+		shGuiWindowSeparator(p_gui);
+		//input field
+		shGuiWindowSeparator(p_gui);
+		shGuiWindowButton(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE,
+			"Confirm",
+			SH_GUI_CENTER_WIDTH
+		);
+	}
+	else if (p_universe_model->display_interface) {
+		shGuiText(
+			p_gui, 
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f, 
+			10.0f,
+			 -10.0f, 
+			"Position UA:",
+			SH_GUI_EDGE_TOP | SH_GUI_EDGE_LEFT
+		);
+		shGuiText(
+			p_gui, 
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f, 
+			10.0f,
+			10.0f, 
+			"RA DEC:",
+			SH_GUI_EDGE_LEFT | SH_GUI_EDGE_BOTTOM
+		);
 
 		char pos[64];
 		sprintf(pos, "%.10f, %.10f, %.10f", p_camera_transform->position[0], -p_camera_transform->position[1], p_camera_transform->position[2]);
 		shGuiText(
 			p_gui,
-			SH_GUI_WINDOW_TEXT_SIZE,
-			-(float)strlen(pos) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 8.0f,
-			(float)p_engine->window.height / 2.0f - SH_GUI_WINDOW_TEXT_SIZE,
-			pos
+			SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+			0.0f,
+			-10.0f,
+			pos,
+			SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_TOP
 		);
 
-		shGuiText(p_gui, SH_GUI_WINDOW_TEXT_SIZE, -(float)p_engine->window.width / 2.0f, -(float)p_engine->window.width / 2.0f, "RA, DEC:");
-		
 		char ra_dec[64];
-		sprintf(ra_dec, "%.10f, %.10f", p_camera_transform->euler[1], -p_camera_transform->euler[0]);
+		float camera_ra = p_camera_transform->euler[1];
+		float camera_dec = -p_camera_transform->euler[0];
+		sprintf(ra_dec, "%.10f, %.10f", camera_ra, camera_dec);
 		shGuiText(
 			p_gui,
-			SH_GUI_WINDOW_TEXT_SIZE,
-			-(float)strlen(ra_dec) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 8.0f,
-			(-(float)p_engine->window.height + SH_GUI_WINDOW_TEXT_SIZE) / 2.0f,
-			ra_dec
+			SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+			0.0f,
+			10.0f,
+			ra_dec,
+			SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_BOTTOM
 		);
+
+		shGuiText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f, 
+			0.0f,
+			0.0f,
+			"+",
+			SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+		);
+
+		shGuiText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+			0.0f,
+			0.0f,
+			"--",
+			SH_GUI_EDGE_LEFT | SH_GUI_CENTER_HEIGHT
+		);
+
+		shGuiText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+			0.0f,
+			0.0f,
+			"--",
+			SH_GUI_EDGE_RIGHT | SH_GUI_CENTER_HEIGHT
+		);
+
+
+		char fov[32];
+		sprintf(fov, "FOV: %.3f", p_camera->fov);
+		shGuiText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+			-10.0f,
+			-10.0f,
+			fov,
+			SH_GUI_EDGE_TOP | SH_GUI_EDGE_RIGHT
+		);
+		
+
+		//cursor coords
+		if (!p_universe_model->display_gui && !p_universe_model->display_quick_menu) {
+			char cursor_ra_dec[64];
+			float cursor_ra = p_engine->window.input.cursor_pos_x;
+			float cursor_dec = p_engine->window.input.cursor_pos_x;
+		
+			sprintf(cursor_ra_dec, "%.2f, %.2f px", cursor_ra, cursor_dec);
+			shGuiText(
+				p_gui,
+				SH_GUI_WINDOW_TEXT_SIZE / 1.0f,
+				-(float)strlen(cursor_ra_dec) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 1.0f / 8.0f + p_engine->window.input.cursor_pos_x,
+				-p_engine->window.input.cursor_pos_y - SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+				cursor_ra_dec,
+				0
+			);
+		}
 	}
 	
-	{
-		double d_time = p_engine->time.delta_time;
 
-		if (shIsKeyDown(p_engine->window, SH_KEY_LEFT)) {
-			p_camera_transform->rotation[1] -= 0.2f * (float)d_time;
-		}
-		if (shIsKeyDown(p_engine->window, SH_KEY_RIGHT)) {
-			p_camera_transform->rotation[1] += 0.2f * (float)d_time;
-		}
-		if (shIsKeyDown(p_engine->window, SH_KEY_UP)) {
-			p_camera_transform->rotation[0] -= 0.2f * (float)d_time;
-		}
-		if (shIsKeyDown(p_engine->window, SH_KEY_DOWN)) {
-			p_camera_transform->rotation[0] += 0.2f * (float)d_time;
-		}
-		if (p_camera_transform->rotation[0] >= SH_DEGREES_TO_RADIANS(89.99999f)) {
-			p_camera_transform->rotation[0] = SH_DEGREES_TO_RADIANS(89.99999f);
-		}
-		if (p_camera_transform->rotation[0] <= SH_DEGREES_TO_RADIANS(-89.99999f)) {
-			p_camera_transform->rotation[0] = SH_DEGREES_TO_RADIANS (-89.99999f);
-		}
 
-		if (shIsKeyPressed(p_engine->window, SH_KEY_0)) {
-			p_camera->speed = 0.1f;
+	float d_time = (float)p_engine->time.delta_time;
+	float fov_scale = 75.0f;
+
+	float d = (75.01f + p_camera->fov - fov_scale) / 200.0f * d_time;
+
+	if (shIsKeyDown(p_engine->window, SH_KEY_LEFT)) {
+		p_camera_transform->rotation[1] -= d;
+	}
+	if (shIsKeyDown(p_engine->window, SH_KEY_RIGHT)) {
+		p_camera_transform->rotation[1] += d;
+	}
+	if (shIsKeyDown(p_engine->window, SH_KEY_UP)) {
+		p_camera_transform->rotation[0] -= d;
+	}
+	if (shIsKeyDown(p_engine->window, SH_KEY_DOWN)) {
+		p_camera_transform->rotation[0] += d;
+	}
+	if (p_camera_transform->rotation[0] >= SH_DEGREES_TO_RADIANS(89.99999f)) {
+		p_camera_transform->rotation[0] = SH_DEGREES_TO_RADIANS(89.99999f);
+	}
+	if (p_camera_transform->rotation[0] <= SH_DEGREES_TO_RADIANS(-89.99999f)) {
+		p_camera_transform->rotation[0] = SH_DEGREES_TO_RADIANS (-89.99999f);
+	}
+
+	if (shIsKeyPressed(p_engine->window, SH_KEY_0)) {
+		p_camera->speed = 0.1f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_1)) {
+		p_camera->speed = 1.0f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_2)) {
+		p_camera->speed = 10.0f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_2)) {
+		p_camera->speed = 50.0f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_3)) {
+		p_camera->speed = 100.0f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_4)) {
+		p_camera->speed = 200.0f;
+	}
+	if (shIsKeyPressed(p_engine->window, SH_KEY_5)) {
+		p_camera->speed = 500.0f;
+	}
+
+	if (shIsKeyDown(p_engine->window, SH_KEY_Z)) {
+		if (p_camera->fov > 0.01f) {
+			p_camera->fov -= p_camera->fov / 2.0f * d_time;
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_1)) {
-			p_camera->speed = 1.0f;
+		else {
+			p_camera->fov = 0.01f;
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_2)) {
-			p_camera->speed = 10.0f;
+	}
+	else if (shIsKeyDown(p_engine->window, SH_KEY_X)) {
+		if (p_camera->fov < 160.0f) {
+			p_camera->fov += p_camera->fov / 2.0f * d_time;
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_2)) {
-			p_camera->speed = 50.0f;
-		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_3)) {
-			p_camera->speed = 100.0f;
-		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_4)) {
-			p_camera->speed = 200.0f;
-		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_5)) {
-			p_camera->speed = 500.0f;
+		else {
+			p_camera->fov = 160.0f;
 		}
 	}
 
@@ -201,11 +335,29 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
+	
+	//pipeline has been released
+
+	gaiaSimulationError(
+		gaiaBuildPipeline(p_engine, p_engine->p_engine_extension) == 0,
+		return 0;
+	);
+
+	gaiaSimulationError(
+		gaiaWriteMemory(p_engine, p_engine->p_engine_extension) == 0,
+		return 0;
+	);
+
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_close(ShEngine* p_engine) {
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
 
 	if (p_universe_model != NULL) {
-		free(p_engine->p_engine_extension);
+		free(p_universe_model->p_celestial_bodies);
+		free(p_universe_model);
 	}
 
 	return 1;

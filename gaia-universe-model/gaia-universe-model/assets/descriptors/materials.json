@@ -13,6 +13,7 @@
             "push_constants_stage": "SHADER_STAGE_VERTEX", 
             "descriptors": [
                 {
+                    "COMMENT": "descriptor size is managed later from gaia-universe-model.c",
                     "set": 0,
                     "size": 16,
                     "type": "STORAGE",

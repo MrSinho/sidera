@@ -21,6 +21,8 @@ typedef struct GaiaUniverseModelMemory {
 	ShVkFixedStates*	p_fixed_states;
 	uint8_t				display_gui;
 	uint8_t				display_menu;
+	uint8_t				display_interface;
+	uint8_t				display_quick_menu;
 } GaiaUniverseModelMemory;
 
 

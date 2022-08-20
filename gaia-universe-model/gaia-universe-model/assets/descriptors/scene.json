@@ -4,6 +4,7 @@
             "camera": {
                 "fov": 45,
                 "speed": 50,
+                "fc": 1E37,
                 "mouse_speed": 3
             },
             "transform": {

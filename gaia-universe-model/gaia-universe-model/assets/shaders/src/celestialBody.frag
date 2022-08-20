@@ -148,10 +148,10 @@ mat4 saturateColor(float saturation) {
 
 vec4 starColor(vec4 temperature_color, float k) {
     float r = distance(fragment_position, body_position);
-    if (r > 0.5f) {
+    if (r > 0.35f) {
         discard;
     }
-    float fact = k / r - 0.75f;
+    float fact = k / r - 2.5f;
     return vec4(vec3(normalize(temperature_color.xyz) * fact), 1.0f * fact);
 }
 
@@ -166,7 +166,7 @@ void main() {
     }
     
 
-    fragColor = saturateColor(4.0) *
+    fragColor = saturateColor(2.0f) *
                 starColor(temperature_color, 0.9f) /
                 //teff / 
                 25.0f;

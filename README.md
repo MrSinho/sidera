@@ -4,6 +4,19 @@
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
+# Roadmap
+
+* Load data from cloud
+* Navigate to a specific region from menu
+* Launcher
+* Menu options:
+	Universe LOD
+	search bar:
+		* by RA DEC position or name
+* Highlight region with cursor
+	* point to coords
+* resize shader
+
 - [Setup](#setup)
 	* [Clone and build](#clone-and-build)
 	* [Generate CMake targets](#generate-cmake-targets)
@@ -15,13 +28,6 @@
 
 ---
 
-
-# Roadmap
-
-* Load data from cloud
-* Reorder position based on distance from camera before rendering
-* Navigate to a specific region from menu
-* Lancher
 
 # Setup
 

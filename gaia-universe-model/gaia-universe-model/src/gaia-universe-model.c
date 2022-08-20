@@ -202,7 +202,6 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	
 	shClearBufferMemory(device, staging_buffer, staging_buffer_memory);
 
-	free(p_model->p_celestial_bodies);
 	return 1;
 }
 
