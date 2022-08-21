@@ -1,7 +1,6 @@
 # gaia-universe-model
 
-
-
+https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-92a3-2c87fabf2909.mp4
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
@@ -31,7 +30,7 @@
 			* Brightness saturation radius
 		* Navigate to a specific region from menu
 
-![](saved/screenshot_0.jpg)
+https://user-images.githubusercontent.com/68569053/185792548-ab8d8614-f213-44b6-a572-1aa5f4ccc656.mp4
 
 
 - [Setup](#setup)
@@ -48,13 +47,6 @@
 
 # Setup
 
-![](saved/screenshot_1.jpg)
-
-## To do:
-- [ ] Update from GEDR3 to GDR3
-- [ ] Gui for settings and star info
-- [ ] Better star shader
-
 ## Clone and Build
 
 Open the terminal and run the following commands:
@@ -69,6 +61,8 @@ python export-simulation.py gaia-universe-model SHARED ../../gaia-universe-model
 ```
 
 if you get a python syntax error specify the python version (must be 3.0 or greater).
+
+![](saved/screenshot_0.jpg)
 
 ### Build
 
