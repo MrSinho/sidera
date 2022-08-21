@@ -1,21 +1,38 @@
 # gaia-universe-model
 
-![](saved/screenshot_0.jpg)
+
+
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
-# Roadmap
+# What it visually considers
+* Position
+* Temperature
+### What ALSO should be considered (at least)
+* Motion
+* Mass
+* Diameter
 
+# To do
 * Load data from cloud
-* Navigate to a specific region from menu
-* Launcher
-* Menu options:
-	Universe LOD
-	search bar:
-		* by RA DEC position or name
-* Highlight region with cursor
-	* point to coords
-* resize shader
+* Gaia Launcher
+	* 3d simulation
+		* Build HR diagram
+		* Loading screen (shengine specific)
+		* Alpha blend (shengine and shvulkan specific)
+		* Grids
+		* Find a way to render interstellar matter
+	* Gaia hub
+		* Time warp
+		* Star search
+			* When selected, point to the star and display info
+		* Scale galaxy
+		* 3d rendering settings
+			* Brightness saturation radius
+		* Navigate to a specific region from menu
+
+![](saved/screenshot_0.jpg)
+
 
 - [Setup](#setup)
 	* [Clone and build](#clone-and-build)
