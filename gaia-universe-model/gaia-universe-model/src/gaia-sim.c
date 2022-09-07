@@ -79,7 +79,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_after_thread(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
-	//called after end of gaia_thread
+	//called after end of gaia_after_thread
 	ShGui* p_gui                              = p_engine->p_gui;
 	ShScene* p_scene                          = &p_engine->scene;
 	ShCamera* p_camera                        = shGetShCamera(p_scene, 0);
