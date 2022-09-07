@@ -146,10 +146,13 @@ mat4 saturateColor(float saturation) {
                  0.0f, 0.0f, 0.0f, 1.0f );
 }
 
-vec4 starColor(vec4 temperature_color, float k) {
+vec4 starColor(vec4 temperature_color, bool fixed_color, float k) {
     float r = distance(fragment_position, body_position);
     if (r > 0.35f) {
         discard;
+    }
+    if (fixed_color == true) {
+        return vec4(temperature_color.xyz * 20.0f, 1.0f);
     }
     float fact = k / r - 2.5f;
     return vec4(vec3(normalize(temperature_color.xyz) * fact), 1.0f * fact);
@@ -166,8 +169,9 @@ void main() {
     }
     
 
-    fragColor = saturateColor(2.0f) *
-                starColor(temperature_color, 0.9f) /
+    fragColor = saturateColor(6.0f) *
+                starColor(temperature_color, false, 0.9f) /
+                //starColor(temperature_color, true, 0.9f) /
                 //teff / 
                 25.0f;
                 //pow(distance(vec4(ubo.camera_position.xyz, 1.0f), fragment_position), 2) * 10.0f;

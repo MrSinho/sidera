@@ -18,43 +18,20 @@ extern "C" {
 #include <cglm/cglm.h>
 
 #include <gaia-universe-model/gaiaUniverseModel.h>
+#include <shthreads/shthreads.h>
 
 #define CENTER_GUI_TEXT_POS_X(text, pos)\
 	-(float)strlen(text) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 8.0f + (float)(pos)
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
-
 	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
 
-	p_engine->p_engine_extension = calloc(1, sizeof(GaiaUniverseModelMemory));
-	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
-
-	GaiaCelestialBodyFlags flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
-
-
-	GaiaModelDescriptorInfo descriptor_info = { 0 };
-	char descriptor_path[256];
-	shMakeAssetsPath("/descriptors/universe-model.json", descriptor_path);
-	
-	
-	gaiaSimulationError(
-		gaiaReadModelDescriptor(descriptor_path, &descriptor_info) == 0,
-		return 0;
-	);
+	p_engine->p_ext = calloc(1, sizeof(GaiaUniverseModelMemory));
+	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
 	gaiaSimulationError(
-		gaiaReadSources(p_engine, GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF, descriptor_info, p_universe_model) == 0,
-		return 0;
-	);
-
-	gaiaSimulationError(
-		gaiaBuildPipeline(p_engine, p_universe_model) == 0,
-		return 0;
-	);
-
-	gaiaSimulationError(
-		gaiaWriteMemory(p_engine, p_universe_model) == 0,
+		gaiaGetAvailableHeap(p_engine) == 0,
 		return 0;
 	);
 
@@ -63,14 +40,51 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 	return 1;
 }
 
+uint64_t SH_ENGINE_EXPORT_FUNCTION gaia_thread(GaiaUniverseModelMemory* p_universe_model) {
+	//called after gaia_start
+	GaiaModelDescriptorInfo descriptor_info = { 0 };
+	char descriptor_path[256];
+	shMakeAssetsPath("/descriptors/universe-model.json", descriptor_path);
+
+	gaiaSimulationError(
+		gaiaReadModelDescriptor(descriptor_path, &descriptor_info) == 0,
+		return 0;
+	);
+
+	gaiaSimulationError(
+		gaiaReadSources(descriptor_info, p_universe_model) == 0,
+		return 0;
+	);
+
+	return 1;
+}
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_after_thread(ShEngine* p_engine) {
+	//called one time after gaia_thread
+	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
+
+	if (p_universe_model->p_pipeline == NULL) {//only the first time the application is loaded
+		gaiaSimulationError(
+			gaiaBuildPipeline(p_engine, p_universe_model) == 0,
+			return 0;
+		);
+	}
+
+	gaiaSimulationError(
+		gaiaWriteMemory(p_engine, p_universe_model) == 0,
+		return 0;
+	);
+
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
-
-	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
-	ShGui* p_gui = p_engine->p_gui;
-	ShScene* p_scene = &p_engine->scene;
-	ShCamera* p_camera = shGetShCamera(p_scene, 0);
-	ShTransform* p_camera_transform = shGetShTransform(p_scene, 0);
-
+	//called after end of gaia_thread
+	ShGui* p_gui                              = p_engine->p_gui;
+	ShScene* p_scene                          = &p_engine->scene;
+	ShCamera* p_camera                        = shGetShCamera(p_scene, 0);
+	ShTransform* p_camera_transform           = shGetShTransform(p_scene, 0);
+	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
 	if ((shIsKeyPressed(p_engine->window, SH_KEY_ESCAPE))
 		|| 
@@ -302,10 +316,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
-	
+	//called after end of gaia_thread
 	ShMaterialHost*				p_material			= &p_engine->p_materials[0];
 	VkCommandBuffer				cmd_buffer			= p_engine->core.p_graphics_commands[0].cmd_buffer;
-	GaiaUniverseModelMemory*	p_universe_model	= p_engine->p_engine_extension;
+	GaiaUniverseModelMemory*	p_universe_model	= p_engine->p_ext;
 	
 	ShScene*					p_scene				= &p_engine->scene;
 	ShTransform*				p_camera_transform	= shGetShTransform(p_scene, 0);
@@ -336,16 +350,15 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
-	
 	//pipeline has been released
 
 	gaiaSimulationError(
-		gaiaBuildPipeline(p_engine, p_engine->p_engine_extension) == 0,
+		gaiaBuildPipeline(p_engine, p_engine->p_ext) == 0,
 		return 0;
 	);
 
 	gaiaSimulationError(
-		gaiaWriteMemory(p_engine, p_engine->p_engine_extension) == 0,
+		gaiaWriteMemory(p_engine, p_engine->p_ext) == 0,
 		return 0;
 	);
 
@@ -353,7 +366,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_close(ShEngine* p_engine) {
-	GaiaUniverseModelMemory* p_universe_model = p_engine->p_engine_extension;
+	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
 	if (p_universe_model != NULL) {
 		free(p_universe_model->p_celestial_bodies);

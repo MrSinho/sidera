@@ -41,11 +41,8 @@ uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_des
 	return 1;
 }
 
-uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celestial_body_flags, const GaiaModelDescriptorInfo descriptor_info, GaiaUniverseModelMemory* p_model) {
+uint8_t gaiaGetAvailableHeap(ShEngine* p_engine) {
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
-	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
-
-	p_model->celestial_body_size = gaiaGetBodySize(celestial_body_flags);
 
 	uint32_t host_visible_available_video_memory = 0;
 	{
@@ -60,7 +57,7 @@ uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celesti
 		shGetMemoryBudgetProperties(p_engine->core.physical_device, NULL, NULL, &heap_budget);
 		host_visible_available_video_memory = (uint32_t)heap_budget.heapBudget[host_memory_type_index];
 	}
-	
+
 	uint32_t device_available_video_memory = 0;
 	{
 		uint32_t device_memory_type_index = 0;
@@ -74,27 +71,37 @@ uint8_t gaiaReadSources(ShEngine* p_engine, const GaiaCelestialBodyFlags celesti
 		shGetMemoryBudgetProperties(p_engine->core.physical_device, NULL, NULL, &heap_budget);
 		device_available_video_memory = (uint32_t)heap_budget.heapBudget[device_memory_type_index];
 	}
-	
+
 	uint32_t available_gpu_heap = host_visible_available_video_memory <= device_available_video_memory ? host_visible_available_video_memory : device_available_video_memory;
-	available_gpu_heap /= 2;
+	
+	GaiaUniverseModelMemory* p_model = p_engine->p_ext;
 
+	p_model->celestial_body_flags = GAIA_RA | GAIA_DEC | GAIA_BARYCENTRIC_DISTANCE | GAIA_TEFF;
+	p_model->celestial_body_size = gaiaGetBodySize(p_model->celestial_body_flags);
+	p_model->available_video_memory = available_gpu_heap / 2;
 
-	p_model->p_celestial_bodies = calloc(1, available_gpu_heap);
+	return 1;
+}
+
+uint8_t gaiaReadSources(GaiaModelDescriptorInfo descriptor_info, GaiaUniverseModelMemory* p_model) {
+	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
+
+	p_model->p_celestial_bodies = calloc(1, p_model->available_video_memory);
 	gaiaError(p_model->p_celestial_bodies == NULL, "invalid celestial bodies memory", return 0);
 
-	printf("Available VRAM: %i\n", available_gpu_heap);
+	printf("Available VRAM: %i\n", p_model->available_video_memory);
 	puts("Loading universe model files...");
-
+	
 	for (uint32_t i = descriptor_info.source_start; i < descriptor_info.source_end; i++) {
 		for (uint8_t half = 0; half < 2; half++) {
 			uint32_t bytes_read = 0;
 			void* p_src = NULL;
 			gaiaError(
-				gaiaReadBinaryFileFromID("../../../gaia-resources/", i, half, celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
+				gaiaReadBinaryFileFromID("../../../gaia-resources/", i, half, p_model->celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
 				"failed reading source file",
 				return 0;
 			);
-			if (p_model->used_gpu_heap + bytes_read >= available_gpu_heap) {
+			if (p_model->used_gpu_heap + bytes_read >= p_model->available_video_memory) {
 				gaiaFree(p_src);
 				break;
 			}

@@ -2,6 +2,8 @@
     "name": "gaia-universe-model",
     "run": 1,
     "start": "gaia_start",
+    "thread": "gaia_thread",
+    "after_thread": "gaia_after_thread",
     "update": "gaia_update",
     "frame_update": "gaia_frame_update",
     "frame_resize": "gaia_frame_resize",
