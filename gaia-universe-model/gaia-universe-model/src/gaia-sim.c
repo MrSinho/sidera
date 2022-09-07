@@ -59,6 +59,38 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION gaia_thread(GaiaUniverseModelMemory* p_univer
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update_pending(ShEngine* p_engine) {
+
+	shGuiText(
+		p_engine->p_gui,
+		SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
+		0.0f,
+		0.0f,
+		"Loading universe model data...",
+		SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+	);
+
+	shGuiText(
+		p_engine->p_gui,
+		SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+		0.0f,
+		-SH_GUI_WINDOW_TEXT_SIZE - 30.0f,
+		"Gaia @Aip: gaia.aip.de",
+		SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+	);
+
+	shGuiText(
+		p_engine->p_gui,
+		SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+		10.0f,
+		-10.0f,
+		"Sinho softworks: gaia-universe-model",
+		SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
+	);
+
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_after_thread(ShEngine* p_engine) {
 	//called one time after gaia_thread
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
@@ -148,6 +180,15 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		);
 	}
 	else if (p_universe_model->display_interface) {
+		shGuiText(
+			p_engine->p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+			-10.0f,
+			10.0f,
+			"Gaia @Aip: gaia.aip.de",
+			SH_GUI_EDGE_RIGHT | SH_GUI_EDGE_BOTTOM
+		);
+
 		shGuiText(
 			p_gui, 
 			SH_GUI_WINDOW_TEXT_SIZE * 1.0f, 

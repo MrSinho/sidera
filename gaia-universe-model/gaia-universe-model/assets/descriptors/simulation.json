@@ -3,6 +3,7 @@
     "run": 1,
     "start": "gaia_start",
     "thread": "gaia_thread",
+    "update_pending": "gaia_update_pending",
     "after_thread": "gaia_after_thread",
     "update": "gaia_update",
     "frame_update": "gaia_frame_update",
