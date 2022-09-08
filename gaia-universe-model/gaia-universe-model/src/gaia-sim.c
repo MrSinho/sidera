@@ -25,7 +25,7 @@ extern "C" {
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
-	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
+	shEngineGuiSetup(p_engine, 512, SH_GUI_THEME_EXTRA_DARK);
 
 	p_engine->p_ext = calloc(1, sizeof(GaiaUniverseModelMemory));
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
