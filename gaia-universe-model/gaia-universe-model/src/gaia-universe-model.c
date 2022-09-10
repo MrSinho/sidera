@@ -90,7 +90,7 @@ uint8_t gaiaReadSources(GaiaModelDescriptorInfo descriptor_info, GaiaUniverseMod
 	gaiaError(p_model->p_celestial_bodies == NULL, "invalid celestial bodies memory", return 0);
 
 	printf("Available VRAM: %i\n", p_model->available_video_memory);
-	puts("Loading universe model files...");
+	puts("gaiaReadResources: loading universe model files...");
 	
 	for (uint32_t i = descriptor_info.source_start; i < descriptor_info.source_end; i++) {
 		for (uint8_t half = 0; half < 2; half++) {
@@ -122,7 +122,7 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 	p_model->p_fixed_states = &p_engine->p_materials[0].fixed_states;
 	VkDevice device = p_engine->core.device;
 	
-	puts("Buildings celestial body pipeline");
+	puts("gaiaBuildPipeline: buildings celestial body pipeline");
 		
 	{//PUSH CONSTANT
 		shSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, 128, &p_model->p_pipeline->push_constant_range);
@@ -176,7 +176,7 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 
 uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	
-	puts("Writing memory");
+	puts("gaiaWriteMemory: writing memory");
 
 	VkDevice device = p_engine->core.device;
 	VkPhysicalDevice physical_device = p_engine->core.physical_device;
@@ -193,8 +193,6 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	VkBuffer model_buffer = p_model->p_pipeline->descriptor_buffers[0];
 	VkDeviceMemory model_buffer_memory = p_model->p_pipeline->descriptor_buffers_memory[0];
 	
-	puts("Copying memory");
-
 	{
 		shResetFence(device, p_fence);
 

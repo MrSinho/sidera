@@ -60,7 +60,7 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION gaia_thread(GaiaUniverseModelMemory* p_univer
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update_pending(ShEngine* p_engine) {
-
+	
 	shGuiText(
 		p_engine->p_gui,
 		SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
@@ -157,6 +157,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			p_camera->fov = 45.0f;
 			p_universe_model->display_menu = 0;
 		}
+		shGuiWindowSeparator(p_gui);
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reload resources", SH_GUI_CENTER_WIDTH)) {
+			shResetEngineState(p_engine, 0);
+		}
 	}
 	else if (p_universe_model->display_quick_menu) {
 		p_universe_model->display_menu = 0;
@@ -170,7 +174,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			SH_GUI_RELATIVE
 		);
 		shGuiWindowSeparator(p_gui);
-		//input field
+
 		shGuiWindowSeparator(p_gui);
 		shGuiWindowButton(
 			p_gui,
@@ -280,10 +284,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			shGuiText(
 				p_gui,
 				SH_GUI_WINDOW_TEXT_SIZE / 1.0f,
-				-(float)strlen(cursor_ra_dec) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 1.0f / 8.0f + p_engine->window.input.cursor_pos_x,
+				p_engine->window.input.cursor_pos_x,
 				-p_engine->window.input.cursor_pos_y - SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
 				cursor_ra_dec,
-				0
+				SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
 			);
 		}
 	}
@@ -392,7 +396,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
 	//pipeline has been released
-
 	gaiaSimulationError(
 		gaiaBuildPipeline(p_engine, p_engine->p_ext) == 0,
 		return 0;
