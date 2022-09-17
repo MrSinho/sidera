@@ -6,6 +6,11 @@
 ## [windows build logs:](https://github.com/mrsinho/shci)
 
         
+
+`build ran for 4.615805625915527s`
+
+---
+
 ```bash
 choco install -y mingw cmake
 mingw-get install gcc mingw32-make gdb
@@ -29,12 +34,6 @@ Warnings:
  Use --force to reinstall, specify a version to install, or try upgrade.
  - mingw - mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
-
-Did you know the proceeds of Pro (and some proceeds from other
- licensed editions) go into bettering the community infrastructure?
- Your support ensures an active community, keeps Chocolatey tip-top,
- plus it nets you some awesome features!
- https://chocolatey.org/compare
 
 ```
 
