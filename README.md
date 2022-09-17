@@ -1,5 +1,7 @@
 # gaia-universe-model
 
+[![windows_badge](.shci/windows-status.svg)](https://github.com/mrsinho/gaia-universe-model/tree/main/.shci/windows-log.md)
+
 https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-92a3-2c87fabf2909.mp4
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
