@@ -95,6 +95,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_after_thread(ShEngine* p_engine) {
 	//called one time after gaia_thread
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
+	if (p_universe_model->used_gpu_heap == 0) {
+		return 1;
+	}
+
 	if (p_universe_model->p_pipeline == NULL) {//only the first time the application is loaded
 		gaiaSimulationError(
 			gaiaBuildPipeline(p_engine, p_universe_model) == 0,
@@ -117,6 +121,38 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 	ShCamera* p_camera                        = shGetShCamera(p_scene, 0);
 	ShTransform* p_camera_transform           = shGetShTransform(p_scene, 0);
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
+
+	shGuiText(
+		p_engine->p_gui,
+		SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+		-10.0f,
+		10.0f,
+		"Gaia @Aip: gaia.aip.de",
+		SH_GUI_EDGE_RIGHT | SH_GUI_EDGE_BOTTOM
+	);
+
+	if (p_universe_model->used_gpu_heap == 0) {
+
+		shGuiText(
+			p_engine->p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
+			10.0f,
+			-10.0f,
+			"Sinho softworks: gaia-universe-model",
+			SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
+		);
+
+		shGuiText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 2.0f * (float)p_engine->window.width / 1000.0f,
+			0.0f,
+			0.0f,
+			"gaia-archive-tools error: invalid file data",
+			SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+		);
+
+		return 1;
+	}
 
 	if ((shIsKeyPressed(p_engine->window, SH_KEY_ESCAPE))
 		|| 
@@ -184,14 +220,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		);
 	}
 	else if (p_universe_model->display_interface) {
-		shGuiText(
-			p_engine->p_gui,
-			SH_GUI_WINDOW_TEXT_SIZE * 1.0f,
-			-10.0f,
-			10.0f,
-			"Gaia @Aip: gaia.aip.de",
-			SH_GUI_EDGE_RIGHT | SH_GUI_EDGE_BOTTOM
-		);
 
 		shGuiText(
 			p_gui, 
@@ -369,24 +397,28 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 	ShScene*					p_scene				= &p_engine->scene;
 	ShTransform*				p_camera_transform	= shGetShTransform(p_scene, 0);
 	ShCamera*					p_camera			= shGetShCamera(p_scene, 0);
-
+	
+	if (p_universe_model->used_gpu_heap == 0) {
+		return 1;
+	}
+	
 	shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
-
+	
 	{
 		float p_const[32];
 		memcpy(p_const, p_camera->projection, 64);
 		memcpy(&((char*)p_const)[64], p_camera->view, 64);
 		shPipelinePushConstants(cmd_buffer, p_const, &p_material->pipeline);
 	}
-
+	
 	shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);
-
+	
 	{//CAMERA
 		shPipelineWriteDescriptorBufferMemory(p_engine->core.device, 1, p_camera_transform->position, &p_material->pipeline);
 	}//CAMERA
-
+	
 	shPipelineBindDescriptorSets(cmd_buffer, 0, p_material->pipeline.descriptor_count, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
-
+	
 	shEndPipeline(&p_material->pipeline);
 	
 	shDraw(cmd_buffer, p_universe_model->used_gpu_heap / p_universe_model->celestial_body_size);
@@ -396,6 +428,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
 	//pipeline has been released
+	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
+
+	if (p_universe_model->used_gpu_heap == 0) {
+		return 1;
+	}
+
 	gaiaSimulationError(
 		gaiaBuildPipeline(p_engine, p_engine->p_ext) == 0,
 		return 0;
@@ -413,7 +451,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_close(ShEngine* p_engine) {
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
 	if (p_universe_model != NULL) {
-		free(p_universe_model->p_celestial_bodies);
+		if (p_universe_model->p_celestial_bodies != NULL) {
+			free(p_universe_model->p_celestial_bodies);
+		}
 		free(p_universe_model);
 	}
 

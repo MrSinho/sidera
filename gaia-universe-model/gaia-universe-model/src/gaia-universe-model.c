@@ -93,22 +93,25 @@ uint8_t gaiaReadSources(GaiaModelDescriptorInfo descriptor_info, GaiaUniverseMod
 	puts("gaiaReadResources: loading universe model files...");
 	
 	for (uint32_t i = descriptor_info.source_start; i < descriptor_info.source_end; i++) {
-		for (uint8_t half = 0; half < 2; half++) {
-			uint32_t bytes_read = 0;
-			void* p_src = NULL;
-			gaiaError(
-				gaiaReadBinaryFileFromID("../../../gaia-resources/", i, half, p_model->celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
-				"failed reading source file",
-				return 0;
-			);
-			if (p_model->used_gpu_heap + bytes_read >= p_model->available_video_memory) {
-				gaiaFree(p_src);
-				break;
-			}
-			memcpy(&((char*)p_model->p_celestial_bodies)[p_model->used_gpu_heap], p_src, bytes_read);
+
+		void*    p_src      = NULL;
+		uint32_t bytes_read = 0;
+
+		gaiaError(
+			gaiaReadBinaryFileFromID("../../../gaia-bin/", i, p_model->celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
+			"failed reading source file",
+			return 0;
+		);
+
+		if (p_model->used_gpu_heap + bytes_read >= p_model->available_video_memory) {
 			gaiaFree(p_src);
-			p_model->used_gpu_heap += bytes_read;
+			break;
 		}
+
+		memcpy(&((char*)p_model->p_celestial_bodies)[p_model->used_gpu_heap], p_src, bytes_read);
+		p_model->used_gpu_heap += bytes_read;
+
+		gaiaFree(p_src);
 	}
 
 	return 1;
@@ -194,6 +197,7 @@ uint8_t gaiaWriteMemory(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) {
 	VkDeviceMemory model_buffer_memory = p_model->p_pipeline->descriptor_buffers_memory[0];
 	
 	{
+		shWaitForFences(device, 1, p_fence);
 		shResetFence(device, p_fence);
 
 		shBeginCommandBuffer(*p_cmd_buffer);
