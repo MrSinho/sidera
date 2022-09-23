@@ -12,6 +12,19 @@ extern "C" {
 #include <shvulkan/shVkPipelineData.h>
 #include <shthreads/shthreads.h>
 
+typedef enum GaiaUniverseModelUI {
+	GAIA_DISPLAY_MENU          = 1 << 0,
+	GAIA_DISPLAY_NAV_INTERFACE = 1 << 1,
+	GAIA_DISPLAY_QUICK_MENU    = 1 << 2,
+	GAIA_DISPLAY_BUILD_MENU    = 1 << 3
+} GaiaUniverseModelUI;
+
+typedef enum GaiaPressedNavItems {
+	GAIA_BUILD_DIAGRAM      = 1 << 0,
+	GAIA_OPEN_HUB           = 1 << 0,
+	GAIA_RENDERING_SETTINGS = 1 << 0,
+} GaiaPressedNavItems;
+
 typedef struct GaiaUniverseModelMemory {
 	uint32_t         used_gpu_heap;
 	void*            p_celestial_bodies;
@@ -21,10 +34,8 @@ typedef struct GaiaUniverseModelMemory {
 	uint32_t         available_video_memory;
 	ShVkPipeline*    p_pipeline;
 	ShVkFixedStates* p_fixed_states;
-	uint8_t          display_gui;
-	uint8_t          display_menu;
-	uint8_t          display_interface;
-	uint8_t          display_quick_menu;
+	
+	GaiaUniverseModelUI display_ui;
 } GaiaUniverseModelMemory;
 
 
