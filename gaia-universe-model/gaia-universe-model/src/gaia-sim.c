@@ -172,29 +172,44 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 	}
 	if (p_universe_model->display_ui & GAIA_DISPLAY_MENU) {
 		
-		shGuiWindow(p_gui, 30.0f, 30.0f, 0.0f, 0.0f, "Menu", SH_GUI_MOVABLE | SH_GUI_RELATIVE);
+		shGuiWindow(
+			p_gui, 
+			500.0f, 
+			300.0f, 
+			0.0f, 
+			0.0f, 
+			"Menu", 
+			SH_GUI_PIXELS
+		);
 		
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Gaia hub          ", SH_GUI_CENTER_WIDTH)) {
+		shGuiWindowText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE,
+			"",
+			0
+		);
+
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Gaia hub          ", SH_GUI_CENTER_WIDTH)) {
 
 		}
 
 		shGuiWindowSeparator(p_gui);
 
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset position    ", SH_GUI_CENTER_WIDTH)) {
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reset position    ", SH_GUI_CENTER_WIDTH)) {
 			p_camera_transform->position[0] = 0.0f;
 			p_camera_transform->position[1] = 0.0f;
 			p_camera_transform->position[2] = 0.0f;
 		}
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset orientation ", SH_GUI_CENTER_WIDTH)) {
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reset orientation ", SH_GUI_CENTER_WIDTH)) {
 			p_camera_transform->rotation[0] = 0.0f;
 			p_camera_transform->rotation[1] = 0.0f;
 			p_camera_transform->rotation[2] = 0.0f;
 		}
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset zoom        ", SH_GUI_CENTER_WIDTH)) {
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reset zoom        ", SH_GUI_CENTER_WIDTH)) {
 			p_camera->fov = 45.0f;
 		}
 		shGuiWindowSeparator(p_gui);
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reload resources  ", SH_GUI_CENTER_WIDTH)) {
+		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reload resources  ", SH_GUI_CENTER_WIDTH)) {
 			shResetEngineState(p_engine, 0);
 		}
 	}
@@ -291,22 +306,28 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			SH_GUI_EDGE_TOP | SH_GUI_EDGE_RIGHT
 		);
 		
-
 		//cursor coords
-		if (	!(p_universe_model->display_ui & GAIA_DISPLAY_MENU)
-				//-p_engine->window.input.cursor_pos_y < ((p_engine->window.height / 2.0f) - bar_size)
+		if (	!(p_universe_model->display_ui & GAIA_DISPLAY_MENU) &&
+				
+				 p_engine->window.input.cursor_pos_x < ((p_engine->window.width / 2.0f))  &&
+				-p_engine->window.input.cursor_pos_x < ((p_engine->window.width / 2.0f))  &&
+
+				-p_engine->window.input.cursor_pos_y < ((p_engine->window.height / 2.0f)) &&
+				 p_engine->window.input.cursor_pos_y < ((p_engine->window.height / 2.0f))
 			) {
-			char cursor_ra_dec[64];
-			float cursor_ra = p_engine->window.input.cursor_pos_x;
-			float cursor_dec = p_engine->window.input.cursor_pos_x;
-		
-			sprintf(cursor_ra_dec, "%.2f, %.2f px", cursor_ra, cursor_dec);
+			char cursor_coords[64];
+			sprintf(
+				cursor_coords,
+				"%.2f, %.2f px", 
+				p_engine->window.input.cursor_pos_x, 
+				p_engine->window.input.cursor_pos_x
+			);
 			shGuiText(
 				p_gui,
 				SH_GUI_WINDOW_TEXT_SIZE / 1.0f,
 				p_engine->window.input.cursor_pos_x,
 				-p_engine->window.input.cursor_pos_y - SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
-				cursor_ra_dec,
+				cursor_coords,
 				SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
 			);
 		}
