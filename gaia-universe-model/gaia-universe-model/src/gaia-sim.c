@@ -20,8 +20,9 @@ extern "C" {
 #include <gaia-universe-model/gaiaUniverseModel.h>
 #include <shthreads/shthreads.h>
 
-#define CENTER_GUI_TEXT_POS_X(text, pos)\
-	-(float)strlen(text) * SH_GUI_CHAR_DISTANCE_OFFSET * SH_GUI_WINDOW_TEXT_SIZE / 8.0f + (float)(pos)
+
+
+#define GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH "/descriptors/universe-model.json"
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
@@ -44,12 +45,14 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION gaia_thread(GaiaUniverseModelMemory* p_univer
 	//called after gaia_start
 	GaiaModelDescriptorInfo descriptor_info = { 0 };
 	char descriptor_path[256];
-	shMakeAssetsPath("/descriptors/universe-model.json", descriptor_path);
+	shMakeAssetsPath(GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH, descriptor_path);
 
 	gaiaSimulationError(
 		gaiaReadModelDescriptor(descriptor_path, &descriptor_info) == 0,
 		return 0;
 	);
+	p_universe_model->resource_count = descriptor_info.source_end - descriptor_info.source_start;
+	p_universe_model->resource_countf = (float)p_universe_model->resource_count;
 
 	gaiaSimulationError(
 		gaiaReadSources(descriptor_info, p_universe_model) == 0,
@@ -175,7 +178,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		shGuiWindow(
 			p_gui, 
 			500.0f, 
-			300.0f, 
+			350.0f, 
 			0.0f, 
 			0.0f, 
 			"Menu", 
@@ -189,12 +192,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			0
 		);
 
-		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Gaia hub          ", SH_GUI_CENTER_WIDTH)) {
-
-		}
-
-		shGuiWindowSeparator(p_gui);
-
+		//if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Gaia hub          ", SH_GUI_CENTER_WIDTH)) {
+		//
+		//}
+		//
+		//shGuiWindowSeparator(p_gui);
+		//
 		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reset position    ", SH_GUI_CENTER_WIDTH)) {
 			p_camera_transform->position[0] = 0.0f;
 			p_camera_transform->position[1] = 0.0f;
@@ -209,29 +212,42 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			p_camera->fov = 45.0f;
 		}
 		shGuiWindowSeparator(p_gui);
+		shGuiWindowText(
+			p_gui,
+			SH_GUI_WINDOW_TEXT_SIZE * 1.5f,
+			"Source files",
+			SH_GUI_CENTER_WIDTH
+		);
+		{
+			char s_resource_count[4] = { '\0' };
+			sprintf(s_resource_count, "%.0f ", p_universe_model->resource_countf);
+			shGuiWindowSliderf(
+				p_gui,
+				200.0f,
+				SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
+				2.0f,
+				25.0f,
+				s_resource_count,
+				&p_universe_model->resource_countf,
+				SH_GUI_CENTER_WIDTH
+			);
+		}
+		
 		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reload resources  ", SH_GUI_CENTER_WIDTH)) {
+			char descriptor_path[256];
+			shMakeAssetsPath(GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH, descriptor_path);
+			gaiaWriteUniverseModelDescriptor(descriptor_path, 0, (uint32_t)p_universe_model->resource_countf, "ftp://hihihiha");
 			shResetEngineState(p_engine, 0);
 		}
 	}
 	else if (p_universe_model->display_ui & GAIA_DISPLAY_NAV_INTERFACE) {
-
-		//shGuiMenuBar(
-		//	p_gui,
-		//	bar_size,
-		//	SH_GUI_EDGE_TOP
-		//);
-		//shGuiMenuItem(
-		//	p_gui,
-		//	"Gaia HUB",
-		//	0
-		//);
 
 		shGuiText(
 			p_gui, 
 			SH_GUI_WINDOW_TEXT_SIZE, 
 			10.0f,
 			-10.0f,
-			"Pos UA:",
+			"Pos pc:",
 			SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
 		);
 		shGuiText(

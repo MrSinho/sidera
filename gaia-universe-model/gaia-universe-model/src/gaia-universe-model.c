@@ -10,7 +10,7 @@ extern "C" {
 #include <shfd/shFile.h>
 
 #include <json.h>
-
+#include <inttypes.h>
 
 
 uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_descriptor_info) {
@@ -37,6 +37,27 @@ uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_des
 	p_descriptor_info->source_end	= json_object_get_int(json_range_end);
 
 	free(parser);
+
+	return 1;
+}
+
+uint8_t gaiaWriteUniverseModelDescriptor(const char* path, uint32_t source_start, uint32_t source_end, const char* server) {
+	gaiaError(path == NULL, "invalid destination file path", return 0);
+	gaiaError(server == NULL, "invalid server address", return 0);
+
+	FILE* dst_stream = fopen(path, "w");
+	gaiaError(dst_stream == NULL, "universe model descriptor not found", return 0);
+
+	char s_universe_model_descriptor[256] = { '\0' };
+
+	sprintf(s_universe_model_descriptor, """{\n\
+\"source_range\": [ %""" PRIu32 """, %""" PRIu32 """ ],\n\
+\"server\": \"ftp://hihihiha\"\n\
+}""", source_start, source_end);
+	
+	fwrite(s_universe_model_descriptor, 1, strlen(s_universe_model_descriptor), dst_stream);
+
+	fclose(dst_stream);
 
 	return 1;
 }
@@ -92,7 +113,7 @@ uint8_t gaiaReadSources(GaiaModelDescriptorInfo descriptor_info, GaiaUniverseMod
 	printf("Available VRAM: %i\n", p_model->available_video_memory);
 	puts("gaiaReadResources: loading universe model files...");
 	
-	for (uint32_t i = descriptor_info.source_start; i < descriptor_info.source_end; i++) {
+	for (uint32_t i = descriptor_info.source_start; i < p_model->resource_count; i++) {
 
 		void*    p_src      = NULL;
 		uint32_t bytes_read = 0;

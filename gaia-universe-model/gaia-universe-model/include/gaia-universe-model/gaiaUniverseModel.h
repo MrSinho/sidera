@@ -26,15 +26,19 @@ typedef enum GaiaPressedNavItems {
 } GaiaPressedNavItems;
 
 typedef struct GaiaUniverseModelMemory {
-	uint32_t         used_gpu_heap;
-	void*            p_celestial_bodies;
-	uint32_t         celestial_body_size;
-	GaiaCelestialBodyFlags         celestial_body_flags;
-	uint32_t         max_buffer_memory;
-	uint32_t         available_video_memory;
-	ShVkPipeline*    p_pipeline;
-	ShVkFixedStates* p_fixed_states;
-	
+
+	uint32_t               used_gpu_heap;
+	uint32_t               resource_count;
+	void*                  p_celestial_bodies;
+	uint32_t               celestial_body_size;
+	GaiaCelestialBodyFlags celestial_body_flags;
+
+	uint32_t               max_buffer_memory;
+	uint32_t               available_video_memory;
+	ShVkPipeline*          p_pipeline;
+	ShVkFixedStates*       p_fixed_states;
+	float				   resource_countf;
+
 	GaiaUniverseModelUI display_ui;
 } GaiaUniverseModelMemory;
 
@@ -54,6 +58,8 @@ typedef struct GaiaModelDescriptorInfo {
 
 
 extern uint8_t gaiaReadModelDescriptor(const char* path, GaiaModelDescriptorInfo* p_descriptor_info);
+
+extern uint8_t gaiaWriteUniverseModelDescriptor(const char* path, uint32_t source_start, uint32_t source_end, const char* server);
 
 extern uint8_t gaiaGetAvailableHeap(ShEngine* p_engine);
 
