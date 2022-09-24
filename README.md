@@ -6,20 +6,11 @@ https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-
 
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
-# What it visually considers
-* Position
-* Temperature
-### What ALSO should be considered (at least)
-* Motion
-* Mass
-* Diameter
-
 # To do
 * Load data from cloud
 * Gaia Launcher
 	* 3d simulation
 		* Build HR diagram
-		* Loading screen (shengine specific)
 		* Alpha blend (shengine and shvulkan specific)
 		* Grids
 		* Find a way to render interstellar matter
@@ -32,8 +23,6 @@ https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-
 			* Brightness saturation radius
 			* Pick pipeline
 		* Navigate to a specific region from menu
-		* Write data on a json file:
-			* The sim application will check every t seconds
 
 https://user-images.githubusercontent.com/68569053/185792548-ab8d8614-f213-44b6-a572-1aa5f4ccc656.mp4
 
