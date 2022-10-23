@@ -220,7 +220,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		);
 		{
 			char s_resource_count[4] = { '\0' };
-			sprintf(s_resource_count, "%.0f ", p_universe_model->resource_countf);
+			sprintf(s_resource_count, "%.0f", p_universe_model->resource_countf);
 			shGuiWindowSliderf(
 				p_gui,
 				200.0f,
