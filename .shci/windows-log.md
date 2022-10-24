@@ -7,7 +7,7 @@
 
         
 
-Build ran for `143.50s`
+Build ran for `173.37s`
 
 ---
 
@@ -18,6 +18,23 @@ mingw-get install gcc mingw32-make gdb
 
 ```bash
 Chocolatey v0.11.2
+Chocolatey detected you are not running from an elevated command shell
+ (cmd/powershell).
+
+ You may experience errors - many functions/packages
+ require admin rights. Only advanced users should run choco w/out an
+ elevated shell. When you open the command shell, you should ensure
+ that you do so with "Run as Administrator" selected. If you are
+ attempting to use Chocolatey in a non-administrator setting, you
+ must select a different location other than the default install
+ location. See
+ https://docs.chocolatey.org/en-us/choco/setup#non-administrative-install
+ for details.
+
+For the question below, you have 20 seconds to make a selection.
+
+ Do you want to continue?([Y]es/[N]o): 
+Timeout or your choice of '' is not a valid selection.
 Installing the following packages:
 curl;mingw;cmake
 By installing, you accept licenses for the packages.
@@ -25,14 +42,14 @@ curl v7.80.0 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
 mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
-cmake v3.22.0 already installed.
+cmake v3.24.2 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
 
 Chocolatey installed 0/3 packages. 
  See the log for details (C:\ProgramData\chocolatey\logs\chocolatey.log).
 
 Warnings:
- - cmake - cmake v3.22.0 already installed.
+ - cmake - cmake v3.24.2 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
  - curl - curl v7.80.0 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
@@ -60,9 +77,13 @@ cmake --build .
 -- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Found Vulkan: C:/VulkanSDK/1.2.198.1/Lib/vulkan-1.lib  
--- Looking for pthread.h
--- Looking for pthread.h - not found
+-- Found Vulkan: C:/VulkanSDK/1.2.198.1/Lib/vulkan-1.lib (found version "1.2.198") found components: glslc glslangValidator 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
 -- Found Threads: TRUE  
 -- Found Doxygen: C:/ProgramData/chocolatey/bin/doxygen.exe (found version "1.9.1") found components: doxygen 
 -- Including Win32 support
