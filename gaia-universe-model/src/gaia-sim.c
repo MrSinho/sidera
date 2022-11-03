@@ -22,7 +22,8 @@ extern "C" {
 
 
 
-#define GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH "/descriptors/universe-model.json"
+#define GAIA_UNIVERSE_MODEL_DESCRIPTOR_DIR      "/descriptors/"
+#define GAIA_UNIVERSE_MODEL_DESCRIPTOR_FILENAME "/universe-model.json"
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
@@ -36,26 +37,31 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 		return 0;
 	);
 
+	shAppendAssetsPath(
+		p_engine->loader_ini.assets_path, 
+		GAIA_UNIVERSE_MODEL_DESCRIPTOR_DIR,
+		GAIA_UNIVERSE_MODEL_DESCRIPTOR_FILENAME,
+		&p_universe_model->descriptor_info.descriptor
+	);
+	
 	p_universe_model->display_ui = GAIA_DISPLAY_NAV_INTERFACE;
+
 
 	return 1;
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION gaia_thread(GaiaUniverseModelMemory* p_universe_model) {
 	//called after gaia_start
-	GaiaModelDescriptorInfo descriptor_info = { 0 };
-	char descriptor_path[256];
-	shMakeAssetsPath(GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH, descriptor_path);
 
 	gaiaSimulationError(
-		gaiaReadModelDescriptor(descriptor_path, &descriptor_info) == 0,
+		gaiaReadModelDescriptor(p_universe_model->descriptor_info.descriptor.path, &p_universe_model->descriptor_info) == 0,
 		return 0;
 	);
-	p_universe_model->resource_count = descriptor_info.source_end - descriptor_info.source_start;
+	p_universe_model->resource_count = p_universe_model->descriptor_info.source_end - p_universe_model->descriptor_info.source_start;
 	p_universe_model->resource_countf = (float)p_universe_model->resource_count;
 
 	gaiaSimulationError(
-		gaiaReadSources(descriptor_info, p_universe_model) == 0,
+		gaiaReadSources(p_universe_model->descriptor_info, p_universe_model) == 0,
 		return 0;
 	);
 
@@ -234,9 +240,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 		}
 		
 		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reload resources  ", SH_GUI_CENTER_WIDTH)) {
-			char descriptor_path[256];
-			shMakeAssetsPath(GAIA_UNIVERSE_MODEL_DESCRIPTOR_PATH, descriptor_path);
-			gaiaWriteUniverseModelDescriptor(descriptor_path, 0, (uint32_t)p_universe_model->resource_countf, "ftp://hihihiha");
+			gaiaWriteUniverseModelDescriptor(
+				p_universe_model->descriptor_info.descriptor.path, 
+				0, 
+				(uint32_t)p_universe_model->resource_countf, 
+				"ftp://hihihiha"
+			);
 			shResetEngineState(p_engine, 0);
 		}
 	}
@@ -488,6 +497,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_close(ShEngine* p_engine) {
 
 	return 1;
 }
+
+
+
+#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
+#include <sheditor/shEditor.h>
+
+int main() {
+    ShEngine engine = { 0 };
+    engine.simulation_host.p_start          = &gaia_start;
+    engine.simulation_host.p_thread         = &gaia_thread;
+    engine.simulation_host.p_update_pending = &gaia_update_pending;
+    engine.simulation_host.p_after_thread   = &gaia_after_thread;
+    engine.simulation_host.p_update         = &gaia_update;
+    engine.simulation_host.p_frame_update   = &gaia_frame_update;
+    engine.simulation_host.p_frame_resize   = &gaia_frame_resize;
+    engine.simulation_host.p_close          = &gaia_close;
+    engine.window.title                     = "gaia universe model";
+    return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 
 

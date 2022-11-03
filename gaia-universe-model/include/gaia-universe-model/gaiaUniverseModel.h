@@ -11,6 +11,7 @@ extern "C" {
 
 #include <shvulkan/shVkPipelineData.h>
 #include <shthreads/shthreads.h>
+#include <shfd/shFd.h>
 
 typedef enum GaiaUniverseModelUI {
 	GAIA_DISPLAY_MENU          = 1 << 0,
@@ -25,28 +26,30 @@ typedef enum GaiaPressedNavItems {
 	GAIA_RENDERING_SETTINGS = 1 << 0,
 } GaiaPressedNavItems;
 
-typedef struct GaiaUniverseModelMemory {
-
-	uint32_t               used_gpu_heap;
-	uint32_t               resource_count;
-	void*                  p_celestial_bodies;
-	uint32_t               celestial_body_size;
-	GaiaCelestialBodyFlags celestial_body_flags;
-
-	uint32_t               max_buffer_memory;
-	uint32_t               available_video_memory;
-	ShVkPipeline*          p_pipeline;
-	ShVkFixedStates*       p_fixed_states;
-	float				   resource_countf;
-
-	GaiaUniverseModelUI display_ui;
-} GaiaUniverseModelMemory;
-
-
 typedef struct GaiaModelDescriptorInfo {
+	ShFd     descriptor;
 	uint32_t source_start;
 	uint32_t source_end;
 } GaiaModelDescriptorInfo;
+
+typedef struct GaiaUniverseModelMemory {
+
+	GaiaModelDescriptorInfo descriptor_info;
+
+	uint32_t                used_gpu_heap;
+	uint32_t                resource_count;
+	void*                   p_celestial_bodies;
+	uint32_t                celestial_body_size;
+	GaiaCelestialBodyFlags  celestial_body_flags;
+
+	uint32_t                max_buffer_memory;
+	uint32_t                available_video_memory;
+	ShVkPipeline*           p_pipeline;
+	ShVkFixedStates*        p_fixed_states;
+	float				    resource_countf;
+
+	GaiaUniverseModelUI display_ui;
+} GaiaUniverseModelMemory;
 
 
 

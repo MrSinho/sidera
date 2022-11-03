@@ -178,13 +178,15 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 
 	{//SHADER STAGES
 		char path[256];
-		shMakeAssetsPath("/shaders/bin/celestialBody.vert.spv", path);
+		strcpy(path, p_engine->loader_ini.assets_path);
+		strcat(path, "/shaders/bin/celestialBody.vert.spv");
 		uint32_t src_size = 0;
 		char* src = (char*)shReadBinary(path, &src_size);
 		shPipelineCreateShaderModule(device, src_size, src, p_model->p_pipeline);
 		shPipelineCreateShaderStage(device, VK_SHADER_STAGE_VERTEX_BIT, p_model->p_pipeline);
 		free(src);
-		shMakeAssetsPath("/shaders/bin/celestialBody.frag.spv", path);
+		strcpy(path, p_engine->loader_ini.assets_path);
+		strcat(path, "/shaders/bin/celestialBody.frag.spv");
 		src = (char*)shReadBinary(path, &src_size);
 		shPipelineCreateShaderModule(device, src_size, src, p_model->p_pipeline);
 		shPipelineCreateShaderStage(device, VK_SHADER_STAGE_FRAGMENT_BIT, p_model->p_pipeline);
