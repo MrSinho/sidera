@@ -32,7 +32,6 @@ https://user-images.githubusercontent.com/68569053/185792548-ab8d8614-f213-44b6-
 	* [Clone and build](#clone-and-build)
 	* [Generate CMake targets](#generate-cmake-targets)
 	* [Build](#build)
-	* [Setup GEDR3 Universe Model data](#build)
 
 - [Testing](#testing)
 
@@ -81,6 +80,3 @@ The linux binaries are compiled at gaia-universe-model/linux/bin
 
 Go to `external/shengine/bin` and run the executable named `sheditor`.
 To move use the `WASD` keys and set the camera speed with `012345`.
-
-<button class="btn">[top](#gaia-universe-model-library-walkthrough)</button>
-<button class="btn">[back to docs](./index.md)</button>
