@@ -27,7 +27,8 @@ extern "C" {
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
-	shEngineGuiSetup(p_engine, 512, SH_GUI_THEME_EXTRA_DARK);
+	
+	shEngineGuiSetup(p_engine, 24, 256, SH_GUI_THEME_EXTRA_DARK);
 
 	p_engine->p_ext = calloc(1, sizeof(GaiaUniverseModelMemory));
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
@@ -45,7 +46,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_start(ShEngine* p_engine) {
 	);
 	
 	p_universe_model->display_ui = GAIA_DISPLAY_NAV_INTERFACE;
-
 
 	return 1;
 }
@@ -443,16 +443,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 	shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 	
 	{
-		float p_const[32];
-		memcpy(p_const, p_camera->projection, 64);
-		memcpy(&((char*)p_const)[64], p_camera->view, 64);
-		shPipelinePushConstants(cmd_buffer, p_const, &p_material->pipeline);
+		shPipelinePushConstants(cmd_buffer, p_camera->projection, &p_material->pipeline);
 	}
 	
 	shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);
 	
 	{//CAMERA
-		shPipelineWriteDescriptorBufferMemory(p_engine->core.device, 1, p_camera_transform->position, &p_material->pipeline);
+		shPipelineWriteDescriptorBufferMemory(p_engine->core.device, 1, 0, 12, p_camera_transform->position, &p_material->pipeline);
 	}//CAMERA
 	
 	shPipelineBindDescriptorSets(cmd_buffer, 0, p_material->pipeline.descriptor_count, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
