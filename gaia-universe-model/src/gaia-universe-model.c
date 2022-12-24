@@ -142,6 +142,14 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 	gaiaError(p_engine == NULL, "invalid engine memory", return 0);
 	gaiaError(p_model == NULL, "invalid universe model memory", return 0);
 
+	//used only when resizing surface
+	//buffers were already set up before releasing the pipeline
+	VkDescriptorBufferInfo buffer_infos[2] = { 0 };
+	if (p_model->p_pipeline != NULL) {
+		buffer_infos[0] = p_model->p_pipeline->descriptor_buffer_infos[0];//set = 0
+		buffer_infos[1] = p_model->p_pipeline->descriptor_buffer_infos[1];//set = 1
+	}
+
 	p_model->p_pipeline = &p_engine->p_materials[0].pipeline;
 	p_model->p_fixed_states = &p_engine->p_materials[0].fixed_states;
 	VkDevice device = p_engine->core.device;
@@ -153,18 +161,31 @@ uint8_t gaiaBuildPipeline(ShEngine* p_engine, GaiaUniverseModelMemory* p_model) 
 	}//PUSH CONSTANT
 
 	{//DESCRIPTOR SET AND BUFFER
-		shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, 0, p_model->used_gpu_heap, p_model->p_pipeline);
-		shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, p_model->p_pipeline);
-		shPipelineBindDescriptorBufferMemory(device, 0, 0, p_model->p_pipeline);
+		if (p_model->p_pipeline->descriptor_buffers[0] == NULL) {//first window setup
+			shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, 0, p_model->used_gpu_heap, p_model->p_pipeline);
+			shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, p_model->p_pipeline);
+			shPipelineBindDescriptorBufferMemory(device, 0, 0, p_model->p_pipeline);
+		}
+		else {//when window is resized
+			p_model->p_pipeline->descriptor_buffer_infos[0] = buffer_infos[0];//set = 0
+			p_model->p_pipeline->write_descriptor_sets[0].pBufferInfo = &p_model->p_pipeline->descriptor_buffer_infos[0];//set = 0
+			p_model->p_pipeline->descriptor_count++;
+		}
 
 		shPipelineDescriptorSetLayout(device, 0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, p_model->p_pipeline);
 		shPipelineCreateDescriptorPool(device, 0, p_model->p_pipeline);
 		shPipelineAllocateDescriptorSet(device, 0, p_model->p_pipeline);
 
-
-		shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 1, 16, p_model->p_pipeline);
-		shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1, p_model->p_pipeline);
-		shPipelineBindDescriptorBufferMemory(device, 1, 0, p_model->p_pipeline);
+		if (p_model->p_pipeline->descriptor_buffers[1] == NULL) {//first window setup
+			shPipelineCreateDescriptorBuffer(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 1, 16, p_model->p_pipeline);
+			shPipelineAllocateDescriptorBufferMemory(device, p_engine->core.physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1, p_model->p_pipeline);
+			shPipelineBindDescriptorBufferMemory(device, 1, 0, p_model->p_pipeline);
+		}
+		else {//when window is resized
+			p_model->p_pipeline->descriptor_buffer_infos[1] = buffer_infos[1];//set = 1
+			p_model->p_pipeline->write_descriptor_sets[1].pBufferInfo = &p_model->p_pipeline->descriptor_buffer_infos[1];//set = 1
+			p_model->p_pipeline->descriptor_count++;
+		}
 
 		shPipelineDescriptorSetLayout(device, 1, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, p_model->p_pipeline);
 		shPipelineCreateDescriptorPool(device, 1, p_model->p_pipeline);

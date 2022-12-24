@@ -198,12 +198,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_update(ShEngine* p_engine) {
 			0
 		);
 
-		//if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Gaia hub          ", SH_GUI_CENTER_WIDTH)) {
-		//
-		//}
-		//
-		//shGuiWindowSeparator(p_gui);
-		//
 		if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE * 1.5f, " Reset position    ", SH_GUI_CENTER_WIDTH)) {
 			p_camera_transform->position[0] = 0.0f;
 			p_camera_transform->position[1] = 0.0f;
@@ -442,9 +436,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 	
 	shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 	
-	{
-		shPipelinePushConstants(cmd_buffer, p_camera->projection, &p_material->pipeline);
-	}
+	shPipelinePushConstants(cmd_buffer, p_camera->projection, &p_material->pipeline);
 	
 	shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);
 	
@@ -462,7 +454,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_update(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
-	//pipeline has been released
+	//pipeline has been released, descriptor memory is still valid
 	GaiaUniverseModelMemory* p_universe_model = p_engine->p_ext;
 
 	if (p_universe_model->used_gpu_heap == 0) {
@@ -471,11 +463,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_frame_resize(ShEngine* p_engine) {
 
 	gaiaSimulationError(
 		gaiaBuildPipeline(p_engine, p_engine->p_ext) == 0,
-		return 0;
-	);
-
-	gaiaSimulationError(
-		gaiaWriteMemory(p_engine, p_engine->p_ext) == 0,
 		return 0;
 	);
 
