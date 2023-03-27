@@ -53,7 +53,7 @@ Open the terminal and run the following commands:
 git clone --recursive https://github.com/MrSinho/gaia-universe-model.git
 cd gaia-universe-model
 cd external/shengine
-python export-simulation.py gaia-universe-model EXECUTABLE ../../gaia-universe-model
+python export-application.py gaia-universe-model EXECUTABLE ../../gaia-universe-model
 ```
 
 if you get a python syntax error specify the python version (must be 3.0 or greater).
