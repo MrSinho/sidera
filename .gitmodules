@@ -1,6 +1,0 @@
-[submodule "externals/shengine"]
-	path = externals/shengine
-	url = https://github.com/mrsinho/shengine.git
-[submodule "externals/gaia-archive-tools"]
-	path = externals/gaia-archive-tools
-	url = https://github.com/mrsinho/gaia-archive-tools
