@@ -1,7 +1,7 @@
 # gaia-universe-model
 
 # Important
-> Major commits coming by the end of August, with many new features and improvements.
+> Major commits are coming by the end of August, with many new features and improvements.
 
 [![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
 [![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
