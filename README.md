@@ -1,5 +1,7 @@
 # gaia-universe-model
 
+# MAJOR COMMITS COMING SOON WITH MANY IMPROVEMENTS AND NEW FEATURES
+
 [![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
 [![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
 
