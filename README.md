@@ -1,83 +1,60 @@
 # gaia-universe-model
 
-# MAJOR UPDATES COMING SOON
+_Check the linux and windows build logs:_
 
-[![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
-[![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
+[![linux_badge](.shci/linux/exit_code.svg)](.shci/linux/log.md)
+[![windows_badge](.shci/windows/exit_code.svg)](.shci/windows/log.md)
 
-https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-92a3-2c87fabf2909.mp4
+A static 3d representation of of the Gaia (Early) Data Release 3 Universe Model data uploaded by the European Space Agency.
 
-# [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
+![](saved/alphafe_age_mass.png)
 
-# To do
+---
 
-* Settings recap on window title
+## Build status
 
-* Audio implementation for music
+Programs and libraries are frequently being tested on Windows 11, and Linux Mint (virtual machine and pc) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-* Decide coordinates system (polar or cartesian)
+![](saved/mass_feh_age_polar__agecf-1.png)
 
-* Load data from cloud (only when the other stuff is ready)
-* Reorder celestial bodies by distance from origin
-	* Subdivide the galaxy in regions
-		* Performance customization:
-			* region size etc...
-			* discard if
+---
 
-* Application - gui
-	* Build diagrams (HR etc...)
-	* Choose rendering pipeline (metallicity, radius, temperature etc...)
-* Application - 3d galaxy rendering
-	* Alpha blending (shengine and shvulkan specific)
-	* Grids
-	* Find a way to render interstellar matter
+## Documentation
 
-* Gaia Launcher / Gaia hub (json file)
-		* Time warp
-		* Star search
-			* When selected, point to the star and display info
-		* Scale galaxy
-		* 3d rendering settings
-			* Brightness saturation radius
-		* Navigate to a specific region from menu
-	* Instead of creating gui, manually update a json file
-		* then press ALT-R to quickly reload what's needed
-		* or press ALT-C to update without reloading
+ * [`Quick install`](docs/quick-install.md)
+ * [`Clone and build`](docs/clone-and-build.md)
+ * [`Download universe model data`](docs/download-universe-model-data.md)
+ * [`Runtime tutorial`](docs/runtime-tutorial.md)
 
-https://user-images.githubusercontent.com/68569053/185792548-ab8d8614-f213-44b6-a572-1aa5f4ccc656.mp4
+---
 
+## Features
 
-- [Setup](#setup)
-	* [Clone and build](#clone-and-build)
-	* [Generate CMake targets](#generate-cmake-targets)
-	* [Build](#build)
+ * 3d plot customization using `.smd` files, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
+ * After downloading Gaia Universe Model data, load as many celestial bodies as you need in the scene, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
+ * Decide what parameters to read (`xyz` parameter types + color_filter). To find what parameters are compatible, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
+ * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](./gaia-universe-model/smd/settings.smd). 
 
-- [Testing](#testing)
+![](saved/mass_feh_age_polar-2.png)
 
 
 ---
 
+## Clone and build (CMake)
 
-# Setup
-
-## Clone and Build
-
-Open the terminal and run the following commands:
-
-### Generate cmake targets
+To generate the CMake targets, open the terminal and run the following commands:
 
 ```bash
 git clone --recursive https://github.com/MrSinho/gaia-universe-model.git
 cd gaia-universe-model
 cd external/shengine
-python export-application.py gaia-universe-model EXECUTABLE ../../gaia-universe-model
+python export-application.py name=gaia-universe-model target=EXECUTABLE path=../../gaia-universe-model
 ```
 
 if you get a python syntax error specify the python version (must be 3.0 or greater).
 
-![](saved/screenshot_0.jpg)
+![](saved/mass_feh_age_polar__agecf.png)
 
-### Build
 
 On Windows:
 ```bash
@@ -91,11 +68,7 @@ On Linux:
 cd gaia-universe-model/linux/build
 cmake --build .
 ```
+
 The linux binaries are compiled at gaia-universe-model/linux/bin
 
-# Testing
-
-![](saved/screenshot_3.png)
-
-Go to `external/shengine/bin` and run the executable named `sheditor`.
-To move use the `WASD` keys and set the camera speed with `012345`.
+![](saved/age_mass_feh__fehcf_cartesian.png)
