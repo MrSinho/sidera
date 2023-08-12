@@ -269,15 +269,16 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_main_renderpass(
 	
 	shPipelinePushConstants(cmd_buffer, p_camera->projection, p_pipeline);
 	
-	shPipelineBindDescriptorSets(
-		cmd_buffer, 
-		GAIA_MODEL_SETTINGS_DESCRIPTOR_IDX * swapchain_image_count + swapchain_image_idx, 
-		1,
-		VK_PIPELINE_BIND_POINT_GRAPHICS,
-		0, 
-		NULL, 
-		p_pool, 
-		p_pipeline
+	shPipelineBindDescriptorSetUnits(
+		cmd_buffer,                      //cmd_buffer
+		0,                               //first_descriptor_set
+		swapchain_image_idx,             //first_descriptor_set_unit_idx
+		1,                               //descriptor_set_unit_count
+		VK_PIPELINE_BIND_POINT_GRAPHICS, //bind_point
+		0,                               //dynamic_descriptors_count
+		NULL,                            //p_dynamic_offsets
+		p_pool,                          //p_pipeline_pool
+		p_pipeline                       //p_pipeline
 	);
 
 	shDraw(cmd_buffer, 3, 0, p_model->resource_count, 0);
@@ -330,7 +331,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION gaia_close(
 	VkDevice           device  = p_engine->core.device;
 	GaiaUniverseModel* p_model = p_engine->p_ext;
 
-	if (p_model->pipeline_pool.descriptor_set_count != 0) {//stuff has been allocated
+	if (p_model->pipeline_pool.descriptor_set_unit_count != 0) {//stuff has been allocated
 		gaiaDestroyPipelinePool(p_engine, p_model);
 	}
 	if (p_model->pipeline_pool.pipelines[GAIA_MODEL_GRAPHICS_PIPELINE_IDX].pipeline != VK_NULL_HANDLE) {
