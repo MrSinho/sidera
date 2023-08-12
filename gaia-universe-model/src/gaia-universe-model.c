@@ -7,6 +7,7 @@ extern "C" {
 #include <gaia-universe-model/gaiaUniverseModel.h>
 #include <smd/smd.h>
 
+#include <memory.h>
 
 
 

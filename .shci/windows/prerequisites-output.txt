@@ -1,14 +1,21 @@
 Chocolatey v2.0.0
-2 validations performed. 1 success(es), 1 warning(s), and 0 error(s).
+Chocolatey detected you are not running from an elevated command shell
+ (cmd/powershell).
 
-Validation Warnings:
- - A pending system reboot request has been detected, however, this is
-   being ignored due to the current Chocolatey configuration.  If you
-   want to halt when this occurs, then either set the global feature
-   using:
-     choco feature enable -name=exitOnRebootDetected
-   or pass the option --exit-when-reboot-detected.
+ You may experience errors - many functions/packages
+ require admin rights. Only advanced users should run choco w/out an
+ elevated shell. When you open the command shell, you should ensure
+ that you do so with "Run as Administrator" selected. If you are
+ attempting to use Chocolatey in a non-administrator setting, you
+ must select a different location other than the default install
+ location. See
+ https://docs.chocolatey.org/en-us/choco/setup#non-administrative-install
+ for details.
 
+For the question below, you have 20 seconds to make a selection.
+
+ Do you want to continue?([Y]es/[N]o): 
+Timeout or your choice of '' is not a valid selection.
 Installing the following packages:
 mingw;cmake
 By installing, you accept licenses for the packages.
@@ -25,3 +32,9 @@ Warnings:
  Use --force to reinstall, specify a version to install, or try upgrade.
  - mingw - mingw v12.2.0.03042023 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
+
+Did you know the proceeds of Pro (and some proceeds from other
+ licensed editions) go into bettering the community infrastructure?
+ Your support ensures an active community, keeps Chocolatey tip-top,
+ plus it nets you some awesome features!
+ https://chocolatey.org/compare

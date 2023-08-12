@@ -7,7 +7,7 @@
 	CAMERA PROPERTIES
 
 
-FLOAT32    ^^ 1    !! camera_right_ascension___rad    --> 0.116196     ***
-FLOAT32    ^^ 1    !! camera_declination_______rad    --> 1.455800     ***
-FLOAT32    ^^ 3    !! camera_position___________pc    --> -65.553741 -9.862309 6.259385     ***
-FLOAT32    ^^ 1    !! camera_fov_______________rad    --> 25.558668     ***
+FLOAT32    ^^ 1    !! camera_right_ascension___rad    --> 0.304751     ***
+FLOAT32    ^^ 1    !! camera_declination_______rad    --> -0.656908     ***
+FLOAT32    ^^ 3    !! camera_position___________pc    --> 26.059479 -15.411435 32.035378     ***
+FLOAT32    ^^ 1    !! camera_fov_______________rad    --> 35.690163     ***
