@@ -1,0 +1,8 @@
+repo_name=gaia-universe-model
+repo_dir=./
+
+prerequisites=.shci/linux/prerequisites.sh
+prerequisites_output=.shci/linux/prerequisites-output.txt
+
+build=.shci/linux/build.sh
+build_output=.shci/linux/build-output.txt

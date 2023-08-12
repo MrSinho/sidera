@@ -1,0 +1,8 @@
+repo_name=gaia-universe-model
+repo_dir=./
+
+prerequisites=.shci/windows/prerequisites.bat
+prerequisites_output=.shci/windows/prerequisites-output.txt
+
+build=.shci/windows/build.bat
+build_output=.shci/windows/build-output.txt

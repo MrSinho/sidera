@@ -1,0 +1,27 @@
+Chocolatey v2.0.0
+2 validations performed. 1 success(es), 1 warning(s), and 0 error(s).
+
+Validation Warnings:
+ - A pending system reboot request has been detected, however, this is
+   being ignored due to the current Chocolatey configuration.  If you
+   want to halt when this occurs, then either set the global feature
+   using:
+     choco feature enable -name=exitOnRebootDetected
+   or pass the option --exit-when-reboot-detected.
+
+Installing the following packages:
+mingw;cmake
+By installing, you accept licenses for the packages.
+mingw v12.2.0.03042023 already installed.
+ Use --force to reinstall, specify a version to install, or try upgrade.
+cmake v3.26.4 already installed.
+ Use --force to reinstall, specify a version to install, or try upgrade.
+
+Chocolatey installed 0/2 packages. 
+ See the log for details (C:\ProgramData\chocolatey\logs\chocolatey.log).
+
+Warnings:
+ - cmake - cmake v3.26.4 already installed.
+ Use --force to reinstall, specify a version to install, or try upgrade.
+ - mingw - mingw v12.2.0.03042023 already installed.
+ Use --force to reinstall, specify a version to install, or try upgrade.

@@ -1,1 +1,1 @@
-gaia-archive-tools ../external/gaia-archive-tools
+gaia-archive-tools ../externals/gaia-archive-tools
