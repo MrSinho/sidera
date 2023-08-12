@@ -1,7 +1,6 @@
 # gaia-universe-model
 
-# Important
-> Major commits are coming by the end of August, with many new features and improvements.
+# MAJOR UPDATES COMING SOON
 
 [![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
 [![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
@@ -11,24 +10,39 @@ https://user-images.githubusercontent.com/68569053/185792534-b0a95fb5-9232-4683-
 # [Online documentation](https://mrsinho.github.io/docs/gaia-universe-model/index)
 
 # To do
-* Load data from cloud
-* Gaia Launcher
-	* 3d simulation
-		* Build HR diagram
-		* Alpha blend (shengine and shvulkan specific)
-		* Grids
-		* Find a way to render interstellar matter
-	* Gaia hub
+
+* Settings recap on window title
+
+* Audio implementation for music
+
+* Decide coordinates system (polar or cartesian)
+
+* Load data from cloud (only when the other stuff is ready)
+* Reorder celestial bodies by distance from origin
+	* Subdivide the galaxy in regions
+		* Performance customization:
+			* region size etc...
+			* discard if
+
+* Application - gui
+	* Build diagrams (HR etc...)
+	* Choose rendering pipeline (metallicity, radius, temperature etc...)
+* Application - 3d galaxy rendering
+	* Alpha blending (shengine and shvulkan specific)
+	* Grids
+	* Find a way to render interstellar matter
+
+* Gaia Launcher / Gaia hub (json file)
 		* Time warp
 		* Star search
 			* When selected, point to the star and display info
 		* Scale galaxy
 		* 3d rendering settings
 			* Brightness saturation radius
-			* Pick pipeline
 		* Navigate to a specific region from menu
 	* Instead of creating gui, manually update a json file
-		* then press ALT-R to reload what's needed
+		* then press ALT-R to quickly reload what's needed
+		* or press ALT-C to update without reloading
 
 https://user-images.githubusercontent.com/68569053/185792548-ab8d8614-f213-44b6-a572-1aa5f4ccc656.mp4
 
