@@ -6,7 +6,7 @@
 
 
 UINT32    ^^ 1    !! data_release            --> GEDR3      *** ignored, only option available
-UINT32    ^^ 1    !! celestial_body_count    --> 15000000    ***
+UINT32    ^^ 1    !! celestial_body_count    --> 5000000    ***
 
 
 
@@ -46,9 +46,9 @@ set xyz parameters, choose between
     VARIABILITY_PERIOD,          
     VARIABILITY_PHASE       
 
-STR1024   ^^ 1    !! x_parameter_type    --> AGE ***
-STR1024   ^^ 1    !! y_parameter_type    --> MASS  ***
-STR1024   ^^ 1    !! z_parameter_type    --> FEH  ***
+STR1024   ^^ 1    !! x_parameter_type    --> RA ***
+STR1024   ^^ 1    !! y_parameter_type    --> DEC  ***
+STR1024   ^^ 1    !! z_parameter_type    --> BARYCENTRIC_DISTANCE  ***
 
 
 
@@ -64,7 +64,7 @@ set color filter, choose between
     RADIUS,               (in solar radiuses, mean value for pulsating stars)
     VSINI                 (rotational velocity in km/s)
     
-STR1024   ^^ 1    !! color_filter    --> FEH    *** writes at COLOR_FILTER_FLAGS and COLOR_FILTER_TYPE
+STR1024   ^^ 1    !! color_filter    --> TEFF    *** writes at COLOR_FILTER_FLAGS and COLOR_FILTER_TYPE
 
 
 
@@ -76,7 +76,7 @@ view mode, choose between:
     CARTESIAN, (values are plotted in a xyz coordinates system)
     POLAR      (values are projected in a spherical environment, xyz parameter types are respectevely interpreted as right ascension, declination, and distance)
 
-STR1024   ^^ 1    !! view_mode     --> CARTESIAN    ***
+STR1024   ^^ 1    !! view_mode     --> POLAR    ***
 
 
 
@@ -86,4 +86,4 @@ choose between (to compare each pipeline's speed, see the profiling.smd file)
     CLOUD,     (expensive, each star is represented as a star-looking cloudy object, there's no volumetric rendering btw)
     ANIMATED   (most expensive, each star is represented as a star-looking animated object)
 
-STR1024   ^^ 1    !! shade_type    --> PIXEL    ***
+STR1024   ^^ 1    !! shade_type    --> ANIMATED    ***
