@@ -785,7 +785,7 @@ uint8_t gaiaSetupPipelinePool(
 	//SETTINGS
 	//
 	//
-	shPipelinePoolSetDescriptorSetBufferInfos(
+	shPipelinePoolSetDescriptorBufferInfos(
 		GAIA_MODEL_SETTINGS_DESCRIPTOR_IDX * swapchain_image_count, swapchain_image_count, dst_buffer,
 		p_model->settings_uniform_buffer_offset,
 		GAIA_MODEL_SETTINGS_UNIFORM_SIZE, p_pool
@@ -810,12 +810,12 @@ uint8_t gaiaSetupPipelinePool(
 		swapchain_image_count, p_pool
 	);
 
-	shPipelinePoolAllocateDescriptorSets(
+	shPipelinePoolAllocateDescriptorSetUnits(
 		device, 0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 		0, swapchain_image_count, p_pool
 	);
 
-	shPipelinePoolUpdateDescriptorSets(
+	shPipelinePoolUpdateDescriptorSetUnits(
 		device, 0, swapchain_image_count, p_pool
 	);
 
