@@ -7,24 +7,23 @@ _Check the linux and windows build logs:_
 
 A static 3d representation of of the Gaia (Early) Data Release 3 Universe Model data uploaded by the European Space Agency.
 
-![](saved/alphafe_age_mass.png)
+![](docs/media/alphafe_age_mass.png)
 
 ---
 
 ## Build status
 
-Programs and libraries are frequently being tested on Windows 11, and Linux Mint (virtual machine and pc) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
+Programs and libraries are frequently being tested on Windows 11, and Linux Mint (wsl and physical machine) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-![](saved/mass_feh_age_polar__agecf-1.png)
+![](docs/media/mass_feh_age_polar__agecf-1.png)
 
 ---
 
 ## Documentation
 
- * [`Quick install`](docs/quick-install.md)
- * [`Clone and build`](docs/clone-and-build.md)
- * [`Download universe model data`](docs/download-universe-model-data.md)
- * [`Runtime tutorial`](docs/runtime-tutorial.md)
+ * [`Quick install`](/docs/quick-install.md)
+ * [`Terminal install`](/docs/terminal-install.md)
+ * [`Runtime tutorial`](/docs/runtime-tutorial.md)
 
 ---
 
@@ -35,40 +34,12 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
  * Decide what parameters to read (`xyz` parameter types + color_filter). To find what parameters are compatible, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
  * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](./gaia-universe-model/smd/settings.smd). 
 
-![](saved/mass_feh_age_polar-2.png)
-
+![](docs/media/mass_feh_age_polar-2.png)
 
 ---
 
-## Clone and build (CMake)
+## Feedback and contributing
 
-To generate the CMake targets, open the terminal and run the following commands:
+I have been personally dedicated to this project since the beginning of 2022, investing a significant amount of my spare time. Should you encounter any issues with the application or wish to introduce new features while addressing existing ones, I welcome your contributions to the repository. You can contribute by either opening an issue or submitting a pull request.
 
-```bash
-git clone --recursive https://github.com/MrSinho/gaia-universe-model.git
-cd gaia-universe-model
-cd external/shengine
-python export-application.py name=gaia-universe-model target=EXECUTABLE path=../../gaia-universe-model
-```
-
-if you get a python syntax error specify the python version (must be 3.0 or greater).
-
-![](saved/mass_feh_age_polar__agecf.png)
-
-
-On Windows:
-```bash
-cd gaia-universe-model/windows/build
-cmake --build .
-```
-The windows binaries are compiled at gaia-universe-model/windows/bin
-
-On Linux:
-```bash
-cd gaia-universe-model/linux/build
-cmake --build .
-```
-
-The linux binaries are compiled at gaia-universe-model/linux/bin
-
-![](saved/age_mass_feh__fehcf_cartesian.png)
+---
