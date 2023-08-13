@@ -23,7 +23,7 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
 
  * [`Quick install`](/docs/quick-install.md)
  * [`Terminal install`](/docs/terminal-install.md)
- * [`Runtime tutorial`](/docs/runtime-tutorial.md)
+ * [`Application tutorial`](/docs/application-tutorial.md)
 
 ---
 

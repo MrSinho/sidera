@@ -36,4 +36,4 @@ Starting from the root directory of the program, go to `gaia-universe-model/wind
 
 ## 4. How to use gaia-universe-model application
 
-See the guide at [docs/runtime-tutorial.md](/docs/runtime-tutorial.md)
+See the guide at [docs/application-tutorial.md](application-tutorial.md)

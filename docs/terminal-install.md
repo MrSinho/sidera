@@ -15,7 +15,7 @@ python export-application.py name=gaia-universe-model target=EXECUTABLE path=../
 
 if you get a python syntax error, try specifying the python version (must be 3.0 or greater).
 
-![](/docs/media/mass_feh_age_polar__agecf.png)
+![](media/mass_feh_age_polar__agecf.png)
 
 
 On Windows:
@@ -61,7 +61,7 @@ cd gaia-universe-model/
 cp ini.smd linux/bin/ini.smd
 ```
 
-![](/docs/media/age_mass_feh__fehcf_cartesian.png)
+![](media/age_mass_feh__fehcf_cartesian.png)
 
 ---
 
@@ -107,12 +107,12 @@ cd gaia-universe-model/linux/bin
 ./gaia-universe-model
 ```
 
-![](/docs/media/gaia-universe-model-startup.png)
+![](media/gaia-universe-model-startup.png)
 
 ---
 
 ## 5. How to use gaia-universe-model application
 
-See the guide at [docs/runtime-tutorial.md](/docs/runtime-tutorial.md)
+See the guide at [docs/application-tutorial.md](application-tutorial.md)
 
 ---
