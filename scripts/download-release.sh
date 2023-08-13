@@ -1,0 +1,1 @@
+sudo python3.9 ../external/gaia-archive-tools/scripts/download-release.py 0 100
