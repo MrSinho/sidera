@@ -352,7 +352,7 @@ uint8_t gaiaReadSources(
 		uint32_t bytes_read = 0;
 
 		gaiaModelError(
-			gaiaReadBinaryFileFromID("../../../gaia-bin/", i, p_model->celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
+			gaiaReadBinaryFileFromID("../../../gaia-release/", i, p_model->celestial_body_flags, 0, 0, &bytes_read, &p_src) == 0,
 			"gaiaReadSources: failed reading source file",
 			return 0;
 		);

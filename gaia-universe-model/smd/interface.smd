@@ -8,6 +8,6 @@
 
 
 FLOAT32    ^^ 1    !! camera_right_ascension___rad    --> 0.000000     ***
-FLOAT32    ^^ 1    !! camera_declination_______rad    --> 0.081846     ***
-FLOAT32    ^^ 3    !! camera_position___________pc    --> -58.700058 -13.597899 -30.953766     ***
-FLOAT32    ^^ 1    !! camera_fov_______________rad    --> 33.671501     ***
+FLOAT32    ^^ 1    !! camera_declination_______rad    --> 0.000000     ***
+FLOAT32    ^^ 3    !! camera_position___________pc    --> 0.000000 0.000000 0.000000     ***
+FLOAT32    ^^ 1    !! camera_fov_______________rad    --> 45.000000     ***

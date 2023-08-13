@@ -6,7 +6,7 @@
 
 
 UINT32    ^^ 1    !! data_release            --> GEDR3      *** ignored, only option available
-UINT32    ^^ 1    !! celestial_body_count    --> 5000000    ***
+UINT32    ^^ 1    !! celestial_body_count    --> 1000000    ***
 
 
 
