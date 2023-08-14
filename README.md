@@ -7,7 +7,7 @@ _Check the linux and windows build logs:_
 
 A 3d representation of of the Gaia (Early) Data Release 3 Universe Model data uploaded by the European Space Agency.
 
-![](docs/media/alphafe_age_mass.png)
+![](./docs/media/alphafe_age_mass.png)
 
 ---
 
@@ -15,18 +15,11 @@ A 3d representation of of the Gaia (Early) Data Release 3 Universe Model data up
 
 Programs and libraries are frequently being tested on Windows 11, and Linux Mint (wsl and physical machine) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
- ![](docs/media/age_cf.png)
-
 ---
 
-## Documentation
+# [Wiki](https://github.com/mrsinho/gaia-universe-model/wiki)
 
- * [`Quick install`](/docs/quick-install.md)
- * [`Terminal install`](/docs/terminal-install.md)
- * [`Application tutorial`](/docs/application-tutorial.md)
-
- ![](media/age_cf.png)
-_x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: age; shade type: animated_
+![](./docs/media/age_cf.png)
 
 ---
 
@@ -38,7 +31,7 @@ _x: right ascension; y: declination; z: barycentric distance; view mode: polar; 
  * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](./gaia-universe-model/smd/settings.smd). 
  * Easily add new graphics features using the [`Vulkan API`](https://www.vulkan.org/) through [`shvulkan`](https://github.com/mrsinho/shvulkan)
 
- ![](docs/media/logg_cf.png)
+ ![](./docs/media/logg_cf.png)
 
 ---
 
