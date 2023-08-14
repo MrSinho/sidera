@@ -210,4 +210,7 @@ Save the file and refresh the application graphics settings with `LEFT_CTRL + G`
 ![](media/logg_cf.png)
 _x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: logg; shade type: animated_
 
+![](media/age_cf.png)
+_x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: age; shade type: animated_
+
 ---

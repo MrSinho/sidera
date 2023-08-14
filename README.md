@@ -15,7 +15,7 @@ A static 3d representation of of the Gaia (Early) Data Release 3 Universe Model 
 
 Programs and libraries are frequently being tested on Windows 11, and Linux Mint (wsl and physical machine) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-![](docs/media/mass_feh_age_polar__agecf-1.png)
+ ![](docs/media/age_cf.png)
 
 ---
 
@@ -24,6 +24,8 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
  * [`Quick install`](/docs/quick-install.md)
  * [`Terminal install`](/docs/terminal-install.md)
  * [`Application tutorial`](/docs/application-tutorial.md)
+
+_x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: age; shade type: animated_
 
 ---
 
@@ -34,7 +36,7 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
  * Decide what parameters to read (`xyz` parameter types + color_filter). To find what parameters are compatible, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
  * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](./gaia-universe-model/smd/settings.smd). 
 
-![](docs/media/mass_feh_age_polar-2.png)
+ ![](docs/media/logg_cf.png)
 
 ---
 
