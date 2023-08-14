@@ -65,6 +65,12 @@ UINT32    ^^ 1    !! celestial_body_count    --> 1000000    ***
 
 Save the file and refresh the application source settings with `LEFT_CTRL + R` (`R` stands for reload).
 
+![](media/30million.png)
+_x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: teff; shade type: animated; 30 million celestial bodies_
+
+![](media/1million.png)
+_x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: teff; shade type: animated; 1 million celestial bodies_
+
 ### 3.2 Customize xyz parameters
 
 You can submit to the GPU at maximum three default celestial body parameters, which will be then plotted in the 3d environment. By default, the celestial body right ascension, declination and barycentric distance will be respectively set at x, y, and z parameters.
