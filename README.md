@@ -1,4 +1,4 @@
-# gaia-universe-model
+# sidera
 
 _Check the linux and windows build logs:_
 
