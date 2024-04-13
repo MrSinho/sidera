@@ -1,9 +1,7 @@
 
-# gaia-universe-model
+# Linux build logs
 
-![linux-badge](exit_code.svg)
-
-## [linux build logs:](https://github.com/mrsinho/shci)
+![](linux-exit-code.svg)
 
 ```
 system        : Linux

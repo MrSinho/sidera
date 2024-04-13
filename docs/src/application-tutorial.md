@@ -1,5 +1,9 @@
 # Application tutorial
 
+![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
+[![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/crystallography-model)
+
+
 [TOC]
 
 ## Run executable
@@ -26,7 +30,7 @@ Starting from the root directory of the program, go to `sidera/os/bin` and run t
 
 ![](./media/sidera-startup.png)
 
----
+
 
 ## Camera properties and text-based interface
 
@@ -49,7 +53,7 @@ FLOAT32    ^^ 1    !! camera_fov_______________rad    --> 45.000000     ***
 
 The camera position is in parsecs (`pc`).
 
----
+
 
 ## Edit source settings
 
@@ -168,7 +172,7 @@ _x: right ascension; y: declination; z: barycentric distance; view mode: polar; 
 _x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: random color; shade type: pixel_
 
 
----
+
 
 ## Edit graphics settings
 
@@ -219,4 +223,3 @@ _x: right ascension; y: declination; z: barycentric distance; view mode: polar; 
 ![](./media/age_cf.png)
 _x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: age; shade type: animated_
 
----

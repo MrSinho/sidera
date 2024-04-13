@@ -1,9 +1,7 @@
 
-# gaia-universe-model
+# Windows build logs
 
-![windows-badge](exit_code.svg)
-
-## [windows build logs:](https://github.com/mrsinho/shci)
+![](windows-exit-code.svg)
 
 ```
 system        : Windows

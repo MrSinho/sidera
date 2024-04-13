@@ -1,5 +1,9 @@
 # Terminal install
 
+![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
+[![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/crystallography-model)
+
+
 [TOC]
 
 ## Clone and build (cmake)
@@ -52,7 +56,7 @@ cd sidera
 
 
 
----
+
 
 ## Move ini file
 
@@ -78,7 +82,7 @@ The engine needs to know where to locate the universe model assets path, and som
 
 ![](./media/age_mass_feh__fehcf_cartesian.png)
 
----
+
 
 ## Download Gaia Data Release binaries
 
@@ -104,7 +108,7 @@ Now navigate to the installation path and find the `scripts` directory and run t
 
 </div>
 
----
+
 
 ## Run executable
 
@@ -130,10 +134,9 @@ Starting from the root directory of the program, go to `sidera/bin/os` and run t
 
 ![](./media/sidera-startup.png)
 
----
+
 
 ## How to use sidera application
 
 See the guide at [docs/application-tutorial.md](application-tutorial.md)
 
----
