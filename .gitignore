@@ -51,14 +51,17 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-gaia-universe-model/CMakeLists.txt
-gaia-universe-model/windows
-gaia-universe-model/linux
+sidera/CMakeLists.txt
+sidera/bin
+sidera/build
+sidera
+
+gaia-release/*
 
 .vscode/*
 .vs/*
 bin/*
-gaia_resources/*
+
 *.bin
 *.csv
 *.csv.bin

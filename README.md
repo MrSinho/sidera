@@ -1,4 +1,4 @@
-# sidera
+# gaia-universe-model
 
 _Check the linux and windows build logs:_
 
@@ -12,6 +12,8 @@ A 3d representation of of the Gaia (Early) Data Release 3 Universe Model data up
 ---
 
 ## Build status
+
+@note _This is a pre-release version, first release is expected to be available by the end of **August 2024**._
 
 Programs and libraries are frequently being tested on Windows 11, and Linux Mint (wsl and physical machine) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 

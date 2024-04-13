@@ -1,2 +1,0 @@
-/src/gaia-universe-model.c
-/src/gaia-sim.c

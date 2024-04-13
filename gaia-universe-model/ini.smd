@@ -1,4 +1,0 @@
-STR1024    ^^ 1    !! ShEngine::ini_properties.application_name        --> gaia-universe-model          ***
-STR1024    ^^ 1    !! ShEngine::ini_properties.application_smd_path    --> ../../smd/application.smd    ***
-
-copy_to_windows/bin_or_linux/bin
