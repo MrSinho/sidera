@@ -378,7 +378,7 @@ int main() {
     p_engine->application_host.p_main_renderpass = (ShApplicationFunc*) &gaia_main_renderpass;
     p_engine->application_host.p_frame_resize    = (ShApplicationFunc*) &gaia_frame_resize;
     p_engine->application_host.p_close           = (ShApplicationFunc*) &gaia_close;
-    p_engine->window.title                       = "gaia universe model";
+    p_engine->window.title                       = "sidera";
     
     shEditorMain(p_engine);
     return 0;

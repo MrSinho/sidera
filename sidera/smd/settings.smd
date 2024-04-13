@@ -6,7 +6,7 @@
 
 
 UINT32    ^^ 1    !! data_release            --> GEDR3      *** ignored, only option available
-UINT32    ^^ 1    !! celestial_body_count    --> 1000000    ***
+UINT32    ^^ 1    !! celestial_body_count    --> 5000000    ***
 
 
 
@@ -64,7 +64,7 @@ set color filter, choose between
     RADIUS,               (in solar radiuses, mean value for pulsating stars)
     VSINI                 (rotational velocity in km/s)
     
-STR1024   ^^ 1    !! color_filter    --> VSINI    *** writes at COLOR_FILTER_FLAGS and COLOR_FILTER_TYPE
+STR1024   ^^ 1    !! color_filter    --> FEH    *** writes at COLOR_FILTER_FLAGS and COLOR_FILTER_TYPE
 
 
 
@@ -86,4 +86,4 @@ choose between (to compare each pipeline's speed, see the profiling.smd file)
     CLOUD,     (expensive, each star is represented as a star-looking cloudy object, there's no volumetric rendering btw)
     ANIMATED   (most expensive, each star is represented as a star-looking animated object)
 
-STR1024   ^^ 1    !! shade_type    --> CIRCLE    ***
+STR1024   ^^ 1    !! shade_type    --> PIXEL    ***
