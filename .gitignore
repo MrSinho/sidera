@@ -54,7 +54,10 @@ dkms.conf
 sidera/CMakeLists.txt
 sidera/bin
 sidera/build
-sidera
+docs/html
+docs/latex
+docs/xml
+docs/Doxyfile
 
 gaia-release/*
 

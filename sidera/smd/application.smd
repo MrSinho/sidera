@@ -1,0 +1,14 @@
+
+
+
+    APPLICATION PROPERTIES
+
+
+
+STR256    ^^ 1    !! ShEngine::application_properties.shared_name             --> sidera                  ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_start                 --> sidera_start            ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_update                --> sidera_update           ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_main_cmd_buffer       --> sidera_main_cmd_buffer  ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_main_renderpass       --> sidera_main_renderpass  ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_frame_resize          --> sidera_frame_resize     ***
+STR256    ^^ 1    !! ShEngine::application_properties.s_close                 --> sidera_close            ***

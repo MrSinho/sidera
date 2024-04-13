@@ -1,3 +1,7 @@
+# Quick install
+
+[TOC]
+
 ## Run shinstaller
 
 Just download, and extract the [`shinstaller`](https://github.com/mrsinho/sidera/releases/latest) zip file included in the [_Sidera latest release_](https://github.com/sidera/releases/latest). After running the executable (or the python script for linux users), an interface similar to this one will appear on your Desktop (the version name might be different):

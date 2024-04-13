@@ -1,3 +1,7 @@
+# Terminal install
+
+[TOC]
+
 ## Clone and build (cmake)
 
 To generate the CMake targets, open the terminal with admin/root permission and run the following commands:

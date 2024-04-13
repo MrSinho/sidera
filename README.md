@@ -1,11 +1,11 @@
-# gaia-universe-model
-
-_Check the linux and windows build logs:_
-
-[![linux_badge](.shci/linux/exit_code.svg)](.shci/linux/log.md)
-[![windows_badge](.shci/windows/exit_code.svg)](.shci/windows/log.md)
+# SIDERA
 
 A 3d representation of of the Gaia (Early) Data Release 3 Universe Model data uploaded by the European Space Agency.
+
+![](https://img.shields.io/badge/Sinho_softworks-006400?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
+[![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/crystallography-model)
+
+[TOC]
 
 ![](./docs/media/alphafe_age_mass.png)
 
@@ -13,13 +13,12 @@ A 3d representation of of the Gaia (Early) Data Release 3 Universe Model data up
 
 ## Build status
 
+![](.shci/linux/linux-exit-code.svg)
+![](.shci/windows/windows-exit-code.svg)
+
 @note _This is a pre-release version, first release is expected to be available by the end of **August 2024**._
 
 Programs and libraries are frequently being tested on Windows 11, and Linux Mint (wsl and physical machine) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
-
----
-
-# [Wiki](https://github.com/mrsinho/gaia-universe-model/wiki)
 
 ![](./docs/media/age_cf.png)
 
@@ -51,6 +50,9 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
 
 ## Feedback and contributing
 
-I have been personally dedicated to this project since the beginning of 2022, investing a significant amount of my spare time, developing the engine, and working on new features. Should you encounter any issues with the application or wish to introduce new features while addressing existing ones, I welcome your contributions to the repository. You can contribute by either opening an issue or submitting a pull request.
+I have been personally dedicated to this project since the beginning of 2022, investing a significant amount of my spare time developing the engine and working on new features. Should you encounter any issues with the application or wish to introduce new features while addressing existing ones, I welcome your contributions to the repository. You can contribute by either opening an issue or submitting a pull request.
+
+[![](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/mrsinho)
+![](https://img.shields.io/badge/Sinho_softworks-006400?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
 
 ---

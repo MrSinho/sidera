@@ -1,3 +1,7 @@
+# Application tutorial
+
+[TOC]
+
 ## Run executable
 
 Starting from the root directory of the program, go to `sidera/os/bin` and run the `sidera` executable file.
