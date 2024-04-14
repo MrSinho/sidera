@@ -1,8 +1,7 @@
 # Application tutorial
 
 ![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
-[![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/crystallography-model)
-
+[![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)
 
 [TOC]
 
@@ -223,3 +222,6 @@ _x: right ascension; y: declination; z: barycentric distance; view mode: polar; 
 ![](./media/age_cf.png)
 _x: right ascension; y: declination; z: barycentric distance; view mode: polar; color filter: age; shade type: animated_
 
+
+![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
+[![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)

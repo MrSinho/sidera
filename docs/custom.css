@@ -3,16 +3,16 @@ html.dark-mode {
     --font-family          : Segoe UI, arial, times, serif;
     --font-family-monospace: ui-monospace, monospace;
 
-    --primary-color      : rgb(30, 220, 180);
-    --primary-dark-color : rgb(100, 250, 200);
-    --primary-light-color: rgb(30, 250, 240);
+    --primary-color      : rgb(0, 255, 255);
+    --primary-dark-color : rgb(0, 180, 180);
+    --primary-light-color: rgb(128, 255, 255);
 
     --page-background-color          : rgb(0, 0, 0);
     --page-foreground-color          : rgb(255, 255, 255);
     --page-secondary-foreground-color: rgb(200, 200, 200);
 
     --menu-focus-background    : var(--primary-color);
-    --menu-focus-foreground    : var(--page-foreground-color);
+    --menu-focus-foreground    : var(--page-background-color);
     --menu-selected-background : var(--page-background-color);
 
     --separator-color : rgb(10, 10, 10);
@@ -50,16 +50,16 @@ html.light-mode {
     --font-family          : Segoe UI, arial, times, serif;
     --font-family-monospace: ui-monospace, monospace;
 
-    --primary-color      : rgb(30, 220, 180);
-    --primary-dark-color : rgb(100, 250, 200);
-    --primary-light-color: rgb(30, 250, 240);
+    --primary-color      : rgb(0, 200, 200);
+    --primary-dark-color : rgb(0, 180, 180);
+    --primary-light-color: rgb(128, 255, 255);
 
     --page-background-color          : rgb(255, 255, 255);
     --page-foreground-color          : rgb(0, 0, 0);
     --page-secondary-foreground-color: rgb(30, 30, 30);
 
     --menu-focus-background    : var(--primary-color);
-    --menu-focus-foreground    : var(--page-background-color);
+    --menu-focus-foreground    : var(--page-foreground-color);
     --menu-selected-background : var(--page-background-color);
 
     --separator-color : rgb(245, 245, 245);

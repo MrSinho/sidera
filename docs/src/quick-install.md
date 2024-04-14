@@ -1,8 +1,7 @@
 # Quick install
 
 ![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
-[![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/crystallography-model)
-
+[![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)
 
 [TOC]
 
@@ -41,3 +40,7 @@ Starting from the root directory of the program, go to `gaia-universe-model/wind
 ## How to use gaia-universe-model application
 
 See the guide at [docs/application-tutorial.md](application-tutorial.md)
+
+
+![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
+[![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)
