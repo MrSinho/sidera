@@ -8,7 +8,7 @@ extern "C" {
 
 #include <gaia-archive-tools/gaiaArchiveTools.h>
 
-#include <shvulkan/shvulkan.h>
+#include <shvulkan/shVulkan.h>
 #include <smd/smd.h>    
 
 
