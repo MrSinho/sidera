@@ -14,14 +14,14 @@ Starting from the root directory of the program, go to `sidera/os/bin` and run t
 - <b class="tab-title">Windows</b>
     ```bash
     #starting from root repo
-    cd sidera/windows/bin
+    cd sidera/bin/windows
     start sidera.exe
     ```
 
 - <b class="tab-title">Linux</b>
     ```bash
     #starting from root repo
-    cd sidera/linux/bin
+    cd sidera/bin/linux
     ./sidera
     ```
 
