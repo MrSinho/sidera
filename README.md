@@ -40,8 +40,19 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
  * Time simulation
  * Shci tests
  * Write header documentation
-
-
+ * For cartesian graph use orthographic projection instead of perspective
+ * Save or load operation inverts camera rotation
+ * GUI hint to edit ../../smd/settings.smd
+ * Add black background regions to gui
+ * Add profiling info to gui
+ * Display polar and cartesian grid and text on grid
+ * Quote data license text on main page, add copyright for sinho softworks
+ * Edit stars brightness and more stars look parameters instead of locking them into the shader
+ * Screenshots (shengine)
+ * Command documentation
+ * Dataset manager app like in gaiasky
+ * Add image or gif to project
+ 
 ## Documentation
 
 See the [`related pages`](https://mrsinho.github.io/sidera-docs/pages) for further documentation.
