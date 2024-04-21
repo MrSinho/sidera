@@ -41,16 +41,26 @@ Programs and libraries are frequently being tested on Windows 11, and Linux Mint
  * Shci tests
  * Write header documentation
  * For cartesian graph use orthographic projection instead of perspective
+ * Option for panorama mode and different panorama projections
+ * Add orthosphere and planetarium mode
+ * Display galactic center
  * Save or load operation inverts camera rotation
  * GUI hint to edit ../../smd/settings.smd
  * Add black background regions to gui
  * Add profiling info to gui
- * Display polar and cartesian grid and text on grid
+ * Display polar and cartesian grid and text on grid (see gaiasky)
+ * Display constellation and constellation boundaries
+ * Option for galactic, elliptic, equatorial and recursive grid
  * Quote data license text on main page, add copyright for sinho softworks
  * Edit stars brightness and more stars look parameters instead of locking them into the shader
  * Screenshots (shengine)
  * Command documentation
  * Dataset manager app like in gaiasky
+ * Find interstellar matter / nebulae datasets and render
+ * Lens flares, bloom effect
+ * Option for distance fade effect
+ * Brightness, contrast, hue, saturation, HDR (maybe on shengine and not on sidera directly)
+ * Customize UI text color and UI regions color
  * Add image or gif to project
  
 ## Documentation
