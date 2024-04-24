@@ -19,7 +19,7 @@ If you need to change the `installation directory`, you can change it before ins
 
 ## Install Gaia Data Release binaries
 
-> Note: the following step needs a python3.11+ interpreter to be already installed in your system.
+@note _The following step needs a python3.11+ interpreter to be already installed in your system._
 
 Now navigate to the installation path and find the `scripts` directory (by default: `C:\Sinho Softworks\gaia-universe-model-x64-v1.0.0\gaia-universe-model-x64-v1.0.0\gaia-universe-model-win64-v1.0.0\scripts`).
 
@@ -37,10 +37,17 @@ Starting from the root directory of the program, go to `gaia-universe-model/wind
 
 
 
-## How to use gaia-universe-model application
+## How to use sidera application
 
 See the guide at [docs/application-tutorial.md](application-tutorial.md)
 
 
 ![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
 [![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)
+
+---
+
+© 2024 Anas Boustani. All rights reserved.
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
+All trademarks and registered trademarks appearing on this website are the property of their respective owners.

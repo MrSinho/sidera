@@ -139,6 +139,12 @@ Starting from the root directory of the program, go to `sidera/bin/os` and run t
 
 See the guide at [docs/application-tutorial.md](application-tutorial.md)
 
-
 ![](https://img.shields.io/badge/SIDERA%20|%20SINHO%20SOFTWORKS-3CFADC?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
 [![](https://img.shields.io/badge/GitHub_repository-3CFADC?style=for-the-badge&logo=github&logoColor=black)](https://github.com/mrsinho/sidera)
+
+---
+
+© 2024 Anas Boustani. All rights reserved.
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
+All trademarks and registered trademarks appearing on this website are the property of their respective owners.
