@@ -5,7 +5,7 @@
 
 [TOC]
 
-## Clone and build (cmake)
+## Clone repository and build CMake targets
 
 To generate the CMake targets, open the terminal with admin/root permission and run the following commands:
 
@@ -51,9 +51,6 @@ cd sidera
     The Linux binaries are compiled at `sidera/bin/linux`
 
 </div>
-
-
-
 
 
 
@@ -126,7 +123,7 @@ Starting from the root directory of the program, go to `sidera/bin/os` and run t
     ```bash
     #starting from root repo
     cd sidera/bin/linux
-    ./sidera
+    sudo ./sidera
     ```
 
 </div>

@@ -22,7 +22,7 @@ Starting from the root directory of the program, go to `sidera/os/bin` and run t
     ```bash
     #starting from root repo
     cd sidera/bin/linux
-    ./sidera
+    sudo ./sidera
     ```
 
 </div>

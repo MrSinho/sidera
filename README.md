@@ -26,10 +26,10 @@ Programs and libraries are frequently being tested on Windows 11 and Linux Mint 
 
 ## Features
 
- * 3d plot customization using `.smd` files, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
- * After downloading Gaia Universe Model data, load as many celestial bodies as you need in the scene, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
- * Decide what parameters to read (`xyz` parameter types + color_filter). To find what parameters are compatible, see [`settings.smd`](./gaia-universe-model/smd/settings.smd).
- * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](./gaia-universe-model/smd/settings.smd). 
+ * 3d plot customization using `.smd` files, see [`settings.smd`](https://github.com/mrsinho/sidera/blob/main/sidera/smd/settings.smd).
+ * After downloading Gaia Universe Model data, load as many celestial bodies as you need in the scene, see [`settings.smd`](https://github.com/mrsinho/sidera/blob/main/sidera/smd/settings.smd).
+ * Decide what parameters to read (`xyz` parameter types + color_filter). To find what parameters are compatible, see [`settings.smd`](https://github.com/mrsinho/sidera/blob/main/sidera/smd/settings.smd).
+ * Graphics settings options: view modes (cartesian, polar), shade types (pixel, circle, cloud, animated cloud), see [`settings.smd`](https://github.com/mrsinho/sidera/blob/main/sidera/smd/settings.smd). 
  * Easily add new graphics features using the [`Vulkan API`](https://www.vulkan.org/) through [`shvulkan`](https://github.com/mrsinho/shvulkan)
 
  ![](./docs/media/radius_cf_pixel.png)
