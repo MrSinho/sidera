@@ -44,7 +44,7 @@ Programs and libraries are frequently being tested on Windows 11 and Linux Mint 
 
 ## Sidera License
 
-Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsinho/sidera/blob/main/LICENSE_](https://github.com/mrsinho/sidera/blob/main/LICENSE) for more detailed information.
+Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsinho/sidera/blob/main/LICENSE_](https://github.com/mrsinho/sidera/blob/main/LICENSE) for detailed information.
 
 ## Roadmap
 
