@@ -54,6 +54,7 @@ Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsi
  * Add commands to documentation
  * Add image or gif to github project
  * Write and link documentation for gaia-archive-tools
+ * Add a gallery page
 
 ### Graphics
  * Lens flares, bloom effect
