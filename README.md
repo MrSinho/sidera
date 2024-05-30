@@ -56,7 +56,7 @@ Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsi
  * Write and link documentation for gaia-archive-tools
  * Add a gallery page
 
-### Graphics
+### Graphics improvements
  * Lens flares, bloom effect
  * Brightness, contrast, hue, saturation, HDR (maybe on shengine and not on sidera directly)
 
@@ -65,6 +65,8 @@ Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsi
  * Add profiling info to gui
  * Add black background regions to gui
  * Customize UI text color and UI regions color
+ * Custom precision cursor
+ * UI text and regions in 3d, custom function shGuiTextInSpace (update shgui)
 
 ### Serialization/parsing
  * Save or load operation inverts camera rotation
@@ -74,6 +76,7 @@ Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsi
  * Screenshots (need to work on shengine)
  * Time simulation based on radial velocity
  * Display vector of radial velocity
+ * Create multi-dimensional graphs (x, y, z, w, v, u...)
  * Motion simulation based on gravity (experimental, embed shphysics to shengine)
  * For cartesian graph use orthographic projection instead of perspective
  * Option for panorama mode and different panorama projections
@@ -83,6 +86,11 @@ Sidera relies on the Gnu General Public License v3 (GPL3), see [_github.com/mrsi
  * Display constellation and constellation boundaries
  * Option for galactic, elliptic, equatorial and recursive grid
  * Option for distance fade effect
+ * Option for star pixel size
+ * Discard pixels with z buffer higher than +1 (vulkan range is 0:1)
+ * Discard pixels with distance from camera higher than a certain value defined with smd file
+
+
 
 ### Datasets
  * Dataset manager app like in gaiasky (flutter could be a possible API)
